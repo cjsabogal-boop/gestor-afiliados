@@ -1,14 +1,102 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// GestorAfiliados - Schema de Base de Datos
+// SaaS para administración de edificios/clubes
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// =====================================
+// MULTI-TENANCY: Organización (Edificio/Club)
+// =====================================
+model Organization {
+  id        String   @id @default(cuid())
+  name      String   // "Edificio Torres del Parque"
+  address   String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  affiliates Affiliate[]
+  invoices   Invoice[]
+  payments   Payment[]
+}
+
+// =====================================
+// AFILIADO (Vecino/Miembro)
+// =====================================
+model Affiliate {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String   // "Carlos Martínez"
+  email          String?
+  phone          String   // "+573001234567" - para WhatsApp
+  unit           String   // "Apto 301" o "Torre A - 502"
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relaciones
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices     Invoice[]
+  payments     Payment[]
+
+  @@index([organizationId])
+}
+
+// =====================================
+// FACTURA/CUOTA
+// =====================================
+enum InvoiceStatus {
+  PENDING   // Amarillo - Por vencer
+  OVERDUE   // Rojo - Vencida (mora)
+  PAID      // Verde - Pagada
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  organizationId String
+  affiliateId    String
+  concept        String        // "Cuota Administración - Enero 2025"
+  amount         Decimal       @db.Decimal(12, 2) // Nunca Float para dinero
+  dueDate        DateTime      // Fecha de vencimiento
+  status         InvoiceStatus @default(PENDING)
+  paidAt         DateTime?     // Fecha de pago (si aplica)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relaciones
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  affiliate    Affiliate    @relation(fields: [affiliateId], references: [id], onDelete: Cascade)
+  payments     Payment[]
+
+  @@index([organizationId])
+  @@index([affiliateId])
+  @@index([status])
+}
+
+// =====================================
+// PAGO
+// =====================================
+model Payment {
+  id             String   @id @default(cuid())
+  organizationId String
+  affiliateId    String
+  invoiceId      String?
+  amount         Decimal  @db.Decimal(12, 2)
+  method         String?  // "Efectivo", "Transferencia", "PSE"
+  notes          String?
+  createdAt      DateTime @default(now())
+
+  // Relaciones
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  affiliate    Affiliate    @relation(fields: [affiliateId], references: [id], onDelete: Cascade)
+  invoice      Invoice?     @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([affiliateId])
 }
