@@ -1,19 +1,16 @@
-import * as admin from 'firebase-admin';
+import { initializeApp, getApps, getApp, App } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
 
-function getFirebaseAdminApp() {
-    if (!admin.apps.length) {
-        try {
-            return admin.initializeApp({
-                projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'gestor-afiliados-2026',
-            });
-        } catch (error) {
-            console.error('Firebase admin initialization error', error);
-            return admin.app();
-        }
-    }
-    return admin.app();
+let app: App;
+
+if (getApps().length === 0) {
+    app = initializeApp({
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'gestor-afiliados-2026',
+    });
+} else {
+    app = getApp();
 }
 
-const app = getFirebaseAdminApp();
-export const db = app.firestore();
-export const auth = app.auth();
+export const db = getFirestore(app);
+export const auth = getAuth(app);
