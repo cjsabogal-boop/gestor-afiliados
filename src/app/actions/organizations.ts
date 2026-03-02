@@ -1,11 +1,11 @@
 /**
- * Server Actions para Organizaciones
- * Vista del administrador del SaaS
+ * Server Actions para Organizaciones - Backend Privilegiado
  */
 'use server';
 
-import prisma from '@/lib/prisma';
-import { OrganizationType } from '@prisma/client';
+import { db } from '@/lib/firebase/admin';
+
+export type OrganizationType = 'EDIFICIO' | 'CLUB' | 'FONDO' | 'OTRO';
 
 export interface OrganizationSummary {
     id: string;
@@ -29,76 +29,89 @@ export interface OrganizationsStats {
     totalDebt: number;
 }
 
-/**
- * Obtiene todas las organizaciones del administrador con resumen de cartera
- */
 export async function getOrganizations(): Promise<OrganizationSummary[]> {
     try {
-        const organizations = await prisma.organization.findMany({
-            where: { isActive: true },
-            include: {
-                affiliates: {
-                    where: { isActive: true },
-                    select: { id: true },
-                },
-                invoices: {
-                    where: { status: { in: ['OVERDUE', 'PENDING'] } },
-                    select: {
-                        status: true,
-                        amount: true
-                    },
-                },
-            },
-            orderBy: { name: 'asc' },
-        });
+        const orgsSnapshot = await db.collection('organizations')
+            .where('isActive', '==', true)
+            .get();
 
-        return organizations.map((org) => {
-            const overdueInvoices = org.invoices.filter(inv => inv.status === 'OVERDUE');
-            const pendingInvoices = org.invoices.filter(inv => inv.status === 'PENDING');
-            const totalDebt = org.invoices.reduce((sum, inv) => sum + Number(inv.amount), 0);
+        const organizations: OrganizationSummary[] = [];
 
-            return {
-                id: org.id,
-                name: org.name,
-                type: org.type,
-                address: org.address,
-                phone: org.phone,
-                email: org.email,
-                isActive: org.isActive,
-                affiliatesCount: org.affiliates.length,
+        for (const orgDoc of orgsSnapshot.docs) {
+            const orgData = orgDoc.data();
+
+            const affiliatesSnapshot = await db.collection(`organizations/${orgDoc.id}/affiliates`)
+                .where('isActive', '==', true)
+                .get();
+
+            const invoicesSnapshot = await db.collection(`organizations/${orgDoc.id}/invoices`)
+                .where('status', 'in', ['OVERDUE', 'PENDING'])
+                .get();
+
+            let overdueCount = 0;
+            let pendingCount = 0;
+            let totalDebt = 0;
+
+            invoicesSnapshot.forEach(invDoc => {
+                const inv = invDoc.data();
+                const amount = Number(inv.amount) || 0;
+                totalDebt += amount;
+
+                if (inv.status === 'OVERDUE') overdueCount++;
+                if (inv.status === 'PENDING') pendingCount++;
+            });
+
+            organizations.push({
+                id: orgDoc.id,
+                name: orgData.name,
+                type: orgData.type as OrganizationType,
+                address: orgData.address || null,
+                phone: orgData.phone || null,
+                email: orgData.email || null,
+                isActive: orgData.isActive,
+                affiliatesCount: affiliatesSnapshot.size,
                 totalDebt,
-                overdueCount: overdueInvoices.length,
-                pendingCount: pendingInvoices.length,
-                createdAt: org.createdAt,
-            };
-        });
+                overdueCount,
+                pendingCount,
+                createdAt: orgData.createdAt ? orgData.createdAt.toDate() : new Date(),
+            });
+        }
+
+        organizations.sort((a, b) => a.name.localeCompare(b.name));
+        return organizations;
     } catch (error) {
         console.error('Error en getOrganizations:', error);
         throw new Error('Error al obtener organizaciones');
     }
 }
 
-/**
- * Obtiene estadísticas generales del SaaS
- */
 export async function getOrganizationsStats(): Promise<OrganizationsStats> {
     try {
-        const [orgs, affiliates, invoices] = await Promise.all([
-            prisma.organization.findMany({
-                select: { id: true, isActive: true },
-            }),
-            prisma.affiliate.count({ where: { isActive: true } }),
-            prisma.invoice.findMany({
-                where: { status: { in: ['OVERDUE', 'PENDING'] } },
-                select: { amount: true },
-            }),
-        ]);
+        const orgsSnapshot = await db.collection('organizations').get();
+
+        let activeOrganizations = 0;
+        let totalAffiliates = 0;
+        let totalDebt = 0;
+
+        for (const doc of orgsSnapshot.docs) {
+            if (doc.data().isActive) activeOrganizations++;
+
+            const affSnap = await db.collection(`organizations/${doc.id}/affiliates`)
+                .where('isActive', '==', true).get();
+            totalAffiliates += affSnap.size;
+
+            const invSnap = await db.collection(`organizations/${doc.id}/invoices`)
+                .where('status', 'in', ['OVERDUE', 'PENDING']).get();
+            invSnap.forEach(i => {
+                totalDebt += Number(i.data().amount) || 0;
+            });
+        }
 
         return {
-            totalOrganizations: orgs.length,
-            activeOrganizations: orgs.filter(o => o.isActive).length,
-            totalAffiliates: affiliates,
-            totalDebt: invoices.reduce((sum, inv) => sum + Number(inv.amount), 0),
+            totalOrganizations: orgsSnapshot.size,
+            activeOrganizations,
+            totalAffiliates,
+            totalDebt,
         };
     } catch (error) {
         console.error('Error en getOrganizationsStats:', error);
@@ -106,20 +119,22 @@ export async function getOrganizationsStats(): Promise<OrganizationsStats> {
     }
 }
 
-/**
- * Obtiene una organización por ID
- */
 export async function getOrganizationById(id: string) {
     try {
-        return await prisma.organization.findUnique({
-            where: { id },
-            include: {
-                alertConfigs: {
-                    where: { isActive: true },
-                    orderBy: { trigger: 'asc' },
-                },
-            },
-        });
+        const docRef = await db.collection('organizations').doc(id).get();
+        if (!docRef.exists) return null;
+
+        const data = docRef.data()!;
+        return {
+            id: docRef.id,
+            name: data.name,
+            type: data.type as OrganizationType,
+            address: data.address || null,
+            phone: data.phone || null,
+            email: data.email || null,
+            isActive: data.isActive,
+            createdAt: data.createdAt?.toDate?.() || new Date()
+        };
     } catch (error) {
         console.error('Error en getOrganizationById:', error);
         throw new Error('Error al obtener organización');

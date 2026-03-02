@@ -4,9 +4,8 @@
 'use client';
 
 import { Bell, Mail, MessageCircle, Clock, AlertTriangle, Calendar, ToggleLeft, ToggleRight, Trash2 } from 'lucide-react';
-import { AlertChannel, AlertTrigger } from '@prisma/client';
-import type { AlertConfigWithStats } from '@/app/actions/alerts';
 import { toggleAlertConfig } from '@/app/actions/alerts';
+import type { AlertConfigWithStats, AlertChannel, AlertTrigger } from '@/app/actions/alerts';
 import { useState, useTransition } from 'react';
 
 interface AlertConfigCardProps {
@@ -40,7 +39,7 @@ export function AlertConfigCard({ config, onDelete }: AlertConfigCardProps) {
         setIsActive(newState);
 
         startTransition(async () => {
-            const result = await toggleAlertConfig(config.id, newState);
+            const result = await toggleAlertConfig(config.organizationId, config.id, newState);
             if (!result.success) {
                 setIsActive(!newState); // Revertir si falla
             }
@@ -66,8 +65,8 @@ export function AlertConfigCard({ config, onDelete }: AlertConfigCardProps) {
             <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                     <div className={`p-2 rounded-lg ${config.trigger === 'DAYS_BEFORE_DUE' ? 'bg-blue-100 dark:bg-blue-900/30' :
-                            config.trigger === 'ON_DUE_DATE' ? 'bg-amber-100 dark:bg-amber-900/30' :
-                                'bg-red-100 dark:bg-red-900/30'
+                        config.trigger === 'ON_DUE_DATE' ? 'bg-amber-100 dark:bg-amber-900/30' :
+                            'bg-red-100 dark:bg-red-900/30'
                         }`}>
                         <TriggerIcon size={18} className={triggerConfig.color} />
                     </div>

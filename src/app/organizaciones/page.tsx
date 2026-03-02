@@ -9,6 +9,8 @@ import { OrganizationCard } from '@/components/OrganizationCard';
 import { formatCOP } from '@/lib/utils';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 export default async function OrganizacionesPage() {
     const [organizations, stats] = await Promise.all([
         getOrganizations(),

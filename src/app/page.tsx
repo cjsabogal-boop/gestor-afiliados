@@ -8,6 +8,8 @@ import Link from 'next/link';
 import { getOrganizations, getOrganizationsStats } from '@/app/actions/organizations';
 import { formatCOP } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   // Obtener datos del servidor
   const [organizations, stats] = await Promise.all([

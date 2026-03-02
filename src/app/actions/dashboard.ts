@@ -1,13 +1,9 @@
-/**
- * Server Actions para el Dashboard de Afiliados
- * IMPORTANTE: Todas las consultas DEBEN filtrar por organizationId
- */
 'use server';
 
-import prisma from '@/lib/prisma';
-import { InvoiceStatus } from '@prisma/client';
+import { db } from '@/lib/firebase/admin';
 
-// Tipo para los datos del dashboard
+export type InvoiceStatus = 'PENDING' | 'OVERDUE' | 'PAID';
+
 export interface AffiliateWithDebt {
     id: string;
     name: string;
@@ -32,17 +28,10 @@ export interface DashboardStats {
     totalDebtAmount: number;
 }
 
-/**
- * Obtiene el resumen del dashboard con estadísticas
- * TODO: Agregar filtro por organizationId cuando exista auth
- */
 export async function getDashboardStats(): Promise<DashboardStats> {
     try {
-        // Por ahora tomamos la primera organización (demo)
-        // En producción: const orgId = session.orgId
-        const org = await prisma.organization.findFirst();
-
-        if (!org) {
+        const orgsSnap = await db.collection('organizations').limit(1).get();
+        if (orgsSnap.empty) {
             return {
                 totalAffiliates: 0,
                 totalOverdue: 0,
@@ -51,39 +40,29 @@ export async function getDashboardStats(): Promise<DashboardStats> {
                 totalDebtAmount: 0,
             };
         }
+        const orgId = orgsSnap.docs[0].id;
 
-        const [affiliates, invoices] = await Promise.all([
-            prisma.affiliate.count({
-                where: { organizationId: org.id },
-            }),
-            prisma.invoice.findMany({
-                where: { organizationId: org.id },
-                select: {
-                    status: true,
-                    amount: true,
-                },
-            }),
-        ]);
+        const affiliatesSnap = await db.collection(`organizations/${orgId}/affiliates`).get();
+        const invoicesSnap = await db.collection(`organizations/${orgId}/invoices`).get();
 
-        const stats = invoices.reduce(
-            (acc, inv) => {
-                const amount = Number(inv.amount);
-                if (inv.status === 'OVERDUE') {
-                    acc.totalOverdue++;
-                    acc.totalDebtAmount += amount;
-                } else if (inv.status === 'PENDING') {
-                    acc.totalPending++;
-                    acc.totalDebtAmount += amount;
-                } else {
-                    acc.totalPaid++;
-                }
-                return acc;
-            },
-            { totalOverdue: 0, totalPending: 0, totalPaid: 0, totalDebtAmount: 0 }
-        );
+        const stats = { totalOverdue: 0, totalPending: 0, totalPaid: 0, totalDebtAmount: 0 };
+
+        invoicesSnap.forEach((invDoc) => {
+            const inv = invDoc.data();
+            const amount = Number(inv.amount) || 0;
+            if (inv.status === 'OVERDUE') {
+                stats.totalOverdue++;
+                stats.totalDebtAmount += amount;
+            } else if (inv.status === 'PENDING') {
+                stats.totalPending++;
+                stats.totalDebtAmount += amount;
+            } else {
+                stats.totalPaid++;
+            }
+        });
 
         return {
-            totalAffiliates: affiliates,
+            totalAffiliates: affiliatesSnap.size,
             ...stats,
         };
     } catch (error) {
@@ -92,74 +71,70 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     }
 }
 
-/**
- * Obtiene la lista de afiliados con sus deudas pendientes
- * Ordenados por: Vencidos primero, luego Pendientes, luego Pagados
- */
 export async function getAffiliatesWithDebt(): Promise<AffiliateWithDebt[]> {
     try {
-        // Por ahora tomamos la primera organización (demo)
-        const org = await prisma.organization.findFirst();
+        const orgsSnap = await db.collection('organizations').limit(1).get();
+        if (orgsSnap.empty) return [];
+        const orgId = orgsSnap.docs[0].id;
 
-        if (!org) {
-            return [];
-        }
+        const affiliatesSnap = await db.collection(`organizations/${orgId}/affiliates`)
+            .where('isActive', '==', true)
+            .get();
 
-        const affiliates = await prisma.affiliate.findMany({
-            where: {
-                organizationId: org.id,
-                isActive: true,
-            },
-            include: {
-                invoices: {
-                    where: {
-                        status: { in: ['OVERDUE', 'PENDING'] },
-                    },
-                    orderBy: {
-                        dueDate: 'asc',
-                    },
-                },
-            },
-            orderBy: {
-                name: 'asc',
-            },
+        const invoicesSnap = await db.collection(`organizations/${orgId}/invoices`)
+            .where('status', 'in', ['OVERDUE', 'PENDING'])
+            .get();
+
+        const invoicesByAffiliate: Record<string, any[]> = {};
+        invoicesSnap.forEach(doc => {
+            const data = doc.data();
+            if (!invoicesByAffiliate[data.affiliateId]) {
+                invoicesByAffiliate[data.affiliateId] = [];
+            }
+            invoicesByAffiliate[data.affiliateId].push({
+                id: doc.id,
+                concept: data.concept,
+                amount: Number(data.amount),
+                dueDate: data.dueDate?.toDate?.() || new Date(),
+                status: data.status,
+            });
         });
 
-        // Mapear y calcular totales
-        const affiliatesWithDebt: AffiliateWithDebt[] = affiliates.map((aff) => {
-            const totalDebt = aff.invoices.reduce(
-                (sum, inv) => sum + Number(inv.amount),
-                0
-            );
+        const affiliatesWithDebt: AffiliateWithDebt[] = [];
 
-            // Determinar estado general
+        affiliatesSnap.forEach(doc => {
+            const data = doc.data();
+            const invoices = invoicesByAffiliate[doc.id] || [];
+
+            const totalDebt = invoices.reduce((sum, inv) => sum + inv.amount, 0);
+
             let status: 'PAID' | 'PENDING' | 'OVERDUE' = 'PAID';
-            if (aff.invoices.some((inv) => inv.status === 'OVERDUE')) {
+            if (invoices.some((inv) => inv.status === 'OVERDUE')) {
                 status = 'OVERDUE';
-            } else if (aff.invoices.some((inv) => inv.status === 'PENDING')) {
+            } else if (invoices.some((inv) => inv.status === 'PENDING')) {
                 status = 'PENDING';
             }
 
-            return {
-                id: aff.id,
-                name: aff.name,
-                phone: aff.phone,
-                unit: aff.unit,
+            invoices.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+
+            affiliatesWithDebt.push({
+                id: doc.id,
+                name: data.name,
+                phone: data.phone,
+                unit: data.unit,
                 totalDebt,
                 status,
-                invoices: aff.invoices.map((inv) => ({
-                    id: inv.id,
-                    concept: inv.concept,
-                    amount: Number(inv.amount),
-                    dueDate: inv.dueDate,
-                    status: inv.status,
-                })),
-            };
+                invoices,
+            });
         });
 
-        // Ordenar: Vencidos > Pendientes > Al día
         const statusOrder = { OVERDUE: 0, PENDING: 1, PAID: 2 };
-        affiliatesWithDebt.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+        affiliatesWithDebt.sort((a, b) => {
+            if (statusOrder[a.status] !== statusOrder[b.status]) {
+                return statusOrder[a.status] - statusOrder[b.status]
+            }
+            return a.name.localeCompare(b.name);
+        });
 
         return affiliatesWithDebt;
     } catch (error) {

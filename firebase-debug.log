@@ -1,0 +1,307 @@
+[debug] [2026-03-02T01:51:04.115Z] ----------------------------------------------------------------------
+[debug] [2026-03-02T01:51:04.117Z] Command:       /opt/homebrew/Cellar/node/25.6.1/bin/node /opt/homebrew/bin/firebase deploy --only hosting
+[debug] [2026-03-02T01:51:04.118Z] CLI Version:   15.6.0
+[debug] [2026-03-02T01:51:04.118Z] Platform:      darwin
+[debug] [2026-03-02T01:51:04.118Z] Node Version:  v25.6.1
+[debug] [2026-03-02T01:51:04.118Z] Time:          Sun Mar 01 2026 20:51:04 GMT-0500 (Colombia Standard Time)
+[debug] [2026-03-02T01:51:04.118Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-02T01:51:04.824Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-02T01:51:04.824Z] > authorizing via signed-in user (cjsabogal@gmail.com)
+[debug] [2026-03-02T01:51:04.824Z] [iam] checking project gestor-afiliados-2026 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-03-02T01:51:04.825Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:04.825Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:04.825Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions [none]
+[debug] [2026-03-02T01:51:04.825Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions  x-goog-user-project=gestor-afiliados-2026
+[debug] [2026-03-02T01:51:04.825Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-02T01:51:05.451Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions 200
+[debug] [2026-03-02T01:51:05.452Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-02T01:51:05.452Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:05.453Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:05.453Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026 [none]
+[debug] [2026-03-02T01:51:05.842Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026 200
+[debug] [2026-03-02T01:51:05.843Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026 {"projectId":"gestor-afiliados-2026","projectNumber":"704612357204","displayName":"Gestor Afiliados 2026","name":"projects/gestor-afiliados-2026","resources":{"hostingSite":"gestor-afiliados-2026"},"state":"ACTIVE","etag":"1_24c2610c-f1b6-4b0d-a4d2-8d79790012b4"}
+[debug] [2026-03-02T01:51:07.004Z] defaultcredentials: writing to file /Users/carlossabogal/.config/firebase/cjsabogal_gmail_com_application_default_credentials.json
+[debug] [2026-03-02T01:51:07.004Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:07.005Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:07.005Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites pageToken=&pageSize=10
+[debug] [2026-03-02T01:51:08.358Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites 200
+[debug] [2026-03-02T01:51:08.359Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites {"sites":[{"name":"projects/gestor-afiliados-2026/sites/gestor-afiliados-2026","defaultUrl":"https://gestor-afiliados-2026.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-03-02T01:51:08.360Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:08.360Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:08.360Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites 
+[debug] [2026-03-02T01:51:08.876Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites 200
+[debug] [2026-03-02T01:51:08.876Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites {"sites":[{"name":"projects/gestor-afiliados-2026/sites/gestor-afiliados-2026","defaultUrl":"https://gestor-afiliados-2026.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-03-02T01:51:08.876Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:08.876Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:08.877Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026/webApps/-/config [none]
+[debug] [2026-03-02T01:51:09.212Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026/webApps/-/config 200
+[debug] [2026-03-02T01:51:09.212Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026/webApps/-/config {"projectId":"gestor-afiliados-2026","appId":"1:704612357204:web:ddc26f59af9b0d6f6809c1","storageBucket":"gestor-afiliados-2026.firebasestorage.app","apiKey":"AIzaSyCotWVp--zpcsRMQ5_T9azq0fHzYbr69Fo","authDomain":"gestor-afiliados-2026.firebaseapp.com","messagingSenderId":"704612357204","projectNumber":"704612357204","version":"2"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-03-02T01:51:11.503Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:11.503Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:11.503Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites/gestor-afiliados-2026 [none]
+[debug] [2026-03-02T01:51:11.974Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites/gestor-afiliados-2026 200
+[debug] [2026-03-02T01:51:11.974Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites/gestor-afiliados-2026 {"name":"projects/gestor-afiliados-2026/sites/gestor-afiliados-2026","defaultUrl":"https://gestor-afiliados-2026.web.app","type":"DEFAULT_SITE"}
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info]    ▲ Next.js 16.0.8 (Turbopack)
+
+[info]    - Environments: .env
+
+
+[info]    Creating an optimized production build ...
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info]  ✓ Compiled successfully in 2.9s
+
+[info]    Running TypeScript ...
+
+[info] Failed to compile.
+
+
+[info] ./prisma.config.ts:4:35
+Type error: Cannot find module 'prisma/config' or its corresponding type declarations.
+
+  2 | // npm install --save-dev prisma dotenv
+  3 | import "dotenv/config";
+> 4 | import { defineConfig, env } from "prisma/config";
+    |                                   ^
+  5 |
+  6 | export default defineConfig({
+  7 |   schema: "prisma/schema.prisma",
+
+[info] Next.js build worker exited with code: 1 and signal: null
+
+[debug] [2026-03-02T01:51:18.155Z] Error: ENOENT: no such file or directory, open '/Users/carlossabogal/Desktop/Proyectos 2026/gestor-afiliados/.next/export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-03-02T01:51:29.849Z] ----------------------------------------------------------------------
+[debug] [2026-03-02T01:51:29.851Z] Command:       /opt/homebrew/Cellar/node/25.6.1/bin/node /opt/homebrew/bin/firebase deploy --only hosting
+[debug] [2026-03-02T01:51:29.851Z] CLI Version:   15.6.0
+[debug] [2026-03-02T01:51:29.851Z] Platform:      darwin
+[debug] [2026-03-02T01:51:29.851Z] Node Version:  v25.6.1
+[debug] [2026-03-02T01:51:29.851Z] Time:          Sun Mar 01 2026 20:51:29 GMT-0500 (Colombia Standard Time)
+[debug] [2026-03-02T01:51:29.851Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-02T01:51:30.539Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-02T01:51:30.539Z] > authorizing via signed-in user (cjsabogal@gmail.com)
+[debug] [2026-03-02T01:51:30.539Z] [iam] checking project gestor-afiliados-2026 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-03-02T01:51:30.539Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:30.539Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:30.540Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions [none]
+[debug] [2026-03-02T01:51:30.540Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions  x-goog-user-project=gestor-afiliados-2026
+[debug] [2026-03-02T01:51:30.540Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-02T01:51:31.142Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions 200
+[debug] [2026-03-02T01:51:31.143Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-02T01:51:31.143Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:31.143Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:31.144Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026 [none]
+[debug] [2026-03-02T01:51:31.568Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026 200
+[debug] [2026-03-02T01:51:31.568Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026 {"projectId":"gestor-afiliados-2026","projectNumber":"704612357204","displayName":"Gestor Afiliados 2026","name":"projects/gestor-afiliados-2026","resources":{"hostingSite":"gestor-afiliados-2026"},"state":"ACTIVE","etag":"1_24c2610c-f1b6-4b0d-a4d2-8d79790012b4"}
+[debug] [2026-03-02T01:51:32.556Z] defaultcredentials: writing to file /Users/carlossabogal/.config/firebase/cjsabogal_gmail_com_application_default_credentials.json
+[debug] [2026-03-02T01:51:32.558Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:32.558Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:32.558Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites pageToken=&pageSize=10
+[debug] [2026-03-02T01:51:33.562Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites 200
+[debug] [2026-03-02T01:51:33.562Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites {"sites":[{"name":"projects/gestor-afiliados-2026/sites/gestor-afiliados-2026","defaultUrl":"https://gestor-afiliados-2026.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-03-02T01:51:33.562Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:33.563Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:33.563Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites 
+[debug] [2026-03-02T01:51:34.091Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites 200
+[debug] [2026-03-02T01:51:34.091Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites {"sites":[{"name":"projects/gestor-afiliados-2026/sites/gestor-afiliados-2026","defaultUrl":"https://gestor-afiliados-2026.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-03-02T01:51:34.092Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:34.092Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:34.092Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026/webApps/-/config [none]
+[debug] [2026-03-02T01:51:34.429Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026/webApps/-/config 200
+[debug] [2026-03-02T01:51:34.429Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026/webApps/-/config {"projectId":"gestor-afiliados-2026","appId":"1:704612357204:web:ddc26f59af9b0d6f6809c1","storageBucket":"gestor-afiliados-2026.firebasestorage.app","apiKey":"AIzaSyCotWVp--zpcsRMQ5_T9azq0fHzYbr69Fo","authDomain":"gestor-afiliados-2026.firebaseapp.com","messagingSenderId":"704612357204","projectNumber":"704612357204","version":"2"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-03-02T01:51:36.705Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:36.705Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:51:36.705Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites/gestor-afiliados-2026 [none]
+[debug] [2026-03-02T01:51:37.093Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites/gestor-afiliados-2026 200
+[debug] [2026-03-02T01:51:37.093Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites/gestor-afiliados-2026 {"name":"projects/gestor-afiliados-2026/sites/gestor-afiliados-2026","defaultUrl":"https://gestor-afiliados-2026.web.app","type":"DEFAULT_SITE"}
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info]    ▲ Next.js 16.0.8 (Turbopack)
+
+[info]    - Environments: .env
+
+
+[info]    Creating an optimized production build ...
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info]  ✓ Compiled successfully in 2.6s
+
+[info]    Running TypeScript ...
+
+[info] Failed to compile.
+
+
+[info] ./src/app/organizaciones/[id]/alertas/page.tsx:46:39
+Type error: Property 'name' does not exist on type '{ createdAt: any; id: string; }'.
+
+  44 |                     >
+  45 |                         <ArrowLeft size={14} />
+> 46 |                         {organization.name}
+     |                                       ^
+  47 |                     </Link>
+  48 |                     <div className="flex items-center justify-between">
+  49 |                         <div className="flex items-center gap-2">
+
+[info] Next.js build worker exited with code: 1 and signal: null
+
+[debug] [2026-03-02T01:51:42.747Z] Error: ENOENT: no such file or directory, open '/Users/carlossabogal/Desktop/Proyectos 2026/gestor-afiliados/.next/export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-03-02T01:52:00.965Z] ----------------------------------------------------------------------
+[debug] [2026-03-02T01:52:00.967Z] Command:       /opt/homebrew/Cellar/node/25.6.1/bin/node /opt/homebrew/bin/firebase deploy --only hosting
+[debug] [2026-03-02T01:52:00.967Z] CLI Version:   15.6.0
+[debug] [2026-03-02T01:52:00.968Z] Platform:      darwin
+[debug] [2026-03-02T01:52:00.968Z] Node Version:  v25.6.1
+[debug] [2026-03-02T01:52:00.968Z] Time:          Sun Mar 01 2026 20:52:00 GMT-0500 (Colombia Standard Time)
+[debug] [2026-03-02T01:52:00.968Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-02T01:52:01.657Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-02T01:52:01.658Z] > authorizing via signed-in user (cjsabogal@gmail.com)
+[debug] [2026-03-02T01:52:01.658Z] [iam] checking project gestor-afiliados-2026 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-03-02T01:52:01.658Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:01.658Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:01.659Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions [none]
+[debug] [2026-03-02T01:52:01.659Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions  x-goog-user-project=gestor-afiliados-2026
+[debug] [2026-03-02T01:52:01.659Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-02T01:52:02.117Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions 200
+[debug] [2026-03-02T01:52:02.117Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gestor-afiliados-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-02T01:52:02.118Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:02.118Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:02.118Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026 [none]
+[debug] [2026-03-02T01:52:02.475Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026 200
+[debug] [2026-03-02T01:52:02.475Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026 {"projectId":"gestor-afiliados-2026","projectNumber":"704612357204","displayName":"Gestor Afiliados 2026","name":"projects/gestor-afiliados-2026","resources":{"hostingSite":"gestor-afiliados-2026"},"state":"ACTIVE","etag":"1_24c2610c-f1b6-4b0d-a4d2-8d79790012b4"}
+[debug] [2026-03-02T01:52:03.627Z] defaultcredentials: writing to file /Users/carlossabogal/.config/firebase/cjsabogal_gmail_com_application_default_credentials.json
+[debug] [2026-03-02T01:52:03.627Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:03.627Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:03.627Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites pageToken=&pageSize=10
+[debug] [2026-03-02T01:52:04.641Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites 200
+[debug] [2026-03-02T01:52:04.641Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites {"sites":[{"name":"projects/gestor-afiliados-2026/sites/gestor-afiliados-2026","defaultUrl":"https://gestor-afiliados-2026.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-03-02T01:52:04.641Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:04.641Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:04.641Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites 
+[debug] [2026-03-02T01:52:05.117Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites 200
+[debug] [2026-03-02T01:52:05.117Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites {"sites":[{"name":"projects/gestor-afiliados-2026/sites/gestor-afiliados-2026","defaultUrl":"https://gestor-afiliados-2026.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-03-02T01:52:05.118Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:05.118Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:05.118Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026/webApps/-/config [none]
+[debug] [2026-03-02T01:52:05.497Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026/webApps/-/config 200
+[debug] [2026-03-02T01:52:05.497Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/gestor-afiliados-2026/webApps/-/config {"projectId":"gestor-afiliados-2026","appId":"1:704612357204:web:ddc26f59af9b0d6f6809c1","storageBucket":"gestor-afiliados-2026.firebasestorage.app","apiKey":"AIzaSyCotWVp--zpcsRMQ5_T9azq0fHzYbr69Fo","authDomain":"gestor-afiliados-2026.firebaseapp.com","messagingSenderId":"704612357204","projectNumber":"704612357204","version":"2"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 15.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-03-02T01:52:07.798Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:07.798Z] Checked if tokens are valid: true, expires at: 1772418461007
+[debug] [2026-03-02T01:52:07.798Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites/gestor-afiliados-2026 [none]
+[debug] [2026-03-02T01:52:08.185Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites/gestor-afiliados-2026 200
+[debug] [2026-03-02T01:52:08.185Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/gestor-afiliados-2026/sites/gestor-afiliados-2026 {"name":"projects/gestor-afiliados-2026/sites/gestor-afiliados-2026","defaultUrl":"https://gestor-afiliados-2026.web.app","type":"DEFAULT_SITE"}
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info]    ▲ Next.js 16.0.8 (Turbopack)
+
+[info]    - Environments: .env
+
+
+[info]    Creating an optimized production build ...
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info]  ✓ Compiled successfully in 2.8s
+
+[info]    Running TypeScript ...
+
+[info]    Collecting page data using 7 workers ...
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info]    Generating static pages using 7 workers (0/5) ...
+
+[info] [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+[info]    Generating static pages using 7 workers (1/5) 
+
+[info]    Generating static pages using 7 workers (2/5) 
+
+[info]    Generating static pages using 7 workers (3/5) 
+
+[info] Error en getOrganizationsStats: [Error [FirebaseError]: Missing or insufficient permissions.] {
+  code: 'permission-denied',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+
+[info] Error en getOrganizationsStats: [Error [FirebaseError]: Missing or insufficient permissions.] {
+  code: 'permission-denied',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+
+[info] Error occurred prerendering page "/organizaciones". Read more: https://nextjs.org/docs/messages/prerender-error
+
+[info] Error: Error al obtener estadísticas
+    at tL (.next/server/chunks/ssr/[root-of-the-server]__62b798dd._.js:15:68165)
+    at async k (.next/server/chunks/ssr/[root-of-the-server]__43a96936._.js:1:5310) {
+  digest: '2038689232'
+}
+
+[info] Export encountered an error on /organizaciones/page: /organizaciones, exiting the build.
+
+[info]  ⨯ Next.js build worker exited with code: 1 and signal: null
+
+[debug] [2026-03-02T01:52:15.687Z] Error: ENOENT: no such file or directory, open '/Users/carlossabogal/Desktop/Proyectos 2026/gestor-afiliados/.next/export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.
