@@ -40,4 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# prisma (legacy)
 /src/generated/prisma
+
+# firebase
+.firebase/
+functions/
+firebase-debug.log
