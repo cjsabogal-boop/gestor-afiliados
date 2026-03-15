@@ -77,12 +77,12 @@ CAPAS DEL SISTEMA:
 ├─────────────────────────────────────────────────────────┤
 │  CDN + WAF  (Cloudflare)                                │
 ├─────────────────────────────────────────────────────────┤
-│  API GATEWAY  (Kong / AWS API Gateway)                  │
+│  API GATEWAY / INGRESS (Routing)                        │
 │  Auth Middleware │ Rate Limiting │ Logging              │
 ├───────────┬───────────┬───────────┬────────────────────┤
 │  BFF Web  │ BFF Mobile│ BFF Admin │  Webhook Service   │
 ├───────────┴───────────┴───────────┴────────────────────┤
-│  MICROSERVICIOS CORE (INCLUYENDO KILLER MODULES)        │
+│  MONOLITO NESTJS (MÓDULOS INTERNOS)                     │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐  │
 │  │ Afiliados│ │Financiero│ │ I.A. Gen │ │ B2B/RRHH │  │
 │  └──────────┘ └──────────┘ └──────────┘ └──────────┘  │
@@ -105,41 +105,22 @@ CAPAS DEL SISTEMA:
 
 afiliadosos/
 ├── apps/
-│   ├── web/                    # React 18 + Vite (Panel admin org)
-│   ├── portal/                 # Next.js 14 (Portal público afiliado)
-│   ├── superadmin/             # React 18 (Panel SaaS superadmin)
-│   ├── mobile/                 # React Native + Expo SDK 51
-│   └── api-gateway/            # Node.js + Express (enrutador)
-├── services/
-│   ├── afiliados-service/      # NestJS — Core afiliados
-│   ├── financiero-service/     # NestJS — Pagos y contabilidad
-│   ├── beneficios-service/     # NestJS — Marketplace y puntos
-│   ├── comunicacion-service/   # NestJS — Notificaciones omnicanal
-│   ├── eventos-service/        # NestJS — Eventos y asambleas
-│   ├── bi-service/             # NestJS + Python — Analytics y Modelos Preditivos
-│   ├── ai-agent-service/       # FastAPI + LangChain — Agente LLM
-│   ├── b2b-portal-service/     # NestJS — RRHH y Conciliación Nómina
-│   ├── openfinance-service/    # NestJS — Integración Belvo/Prometeo
-│   ├── tenant-service/         # NestJS — Multi-tenancy y billing
-│   └── compliance-service/     # NestJS — Habeas Data, SARLAFT
+│   ├── web/                    # React 18 + Vite (Panel Admin/Superadmin)
+│   ├── mobile/                 # React Native + Expo SDK 51 (App Afiliados/Residentes)
+│   └── api/                    # NestJS Monolith (Core de la plataforma)
 ├── packages/
-│   ├── ui/                     # Design system compartido
-│   ├── types/                  # TypeScript types globales
-│   ├── utils/                  # Helpers compartidos
-│   ├── config/                 # ESLint, TSConfig, etc.
-│   └── colombia-validators/    # Cédula, NIT, SMMLV helpers
+│   ├── ui/                     # Design system compartido (shadcn/ui config)
+│   ├── types/                  # TypeScript types e interfaces compartidas
+│   ├── utils/                  # Helpers compartidos (validación cédula/NIT Colombia)
+│   └── config/                 # ESLint, TSConfig, Prettier
 ├── infra/
-│   ├── docker/                 # Dockerfiles por servicio
-│   ├── k8s/                    # Manifests Kubernetes
-│   ├── terraform/              # IaC AWS
-│   └── scripts/                # Seed, migrations, etc.
-├── docs/
-│   ├── api/                    # OpenAPI specs
-│   ├── architecture/           # Diagramas y decisiones (ADR)
-│   └── onboarding/             # Guías para developers
-├── turbo.json
+│   ├── docker/                 # Dockerfiles para web y api
+│   ├── scripts/                # Seed, migraciones
+│   └── docker-compose.dev.yml  # Levanta Postgres, Redis, API y Web
 ├── pnpm-workspace.yaml
-└── docker-compose.dev.yml`
+└── turbo.json`
+      }
+    ]`
       }
     ]
   },
