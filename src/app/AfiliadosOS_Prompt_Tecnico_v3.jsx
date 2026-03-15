@@ -64,61 +64,49 @@ MÉTRICAS DE ÉXITO:
       {
         label: "ARQUITECTURA GENERAL",
         color: "#00E5A0",
-        content: `PATRÓN ARQUITECTÓNICO: Microservicios con BFF (Backend for Frontend)
-MULTI-TENANCY: Shared Database + Row-Level Security (PostgreSQL RLS)
-COMUNICACIÓN INTERNA: Event-driven con RabbitMQ para procesos async
-API EXTERNA: REST + GraphQL (consultas complejas de BI)
+        content: `PATRÓN ARQUITECTÓNICO: Backend-as-a-Service (BaaS) con Serverless 
+MULTI-TENANCY: Firestore Security Rules + tenantId en documentos
+COMUNICACIÓN INTERNA: Firebase EventArc / Cloud Functions Triggers
+API EXTERNA: Next.js Server Actions / Firestore SDK directo en cliente (Realtime)
 
 CAPAS DEL SISTEMA:
 ┌─────────────────────────────────────────────────────────┐
 │  CLIENTES                                                │
-│  Web App (React)  │  Mobile App (React Native)          │
-│  Admin Panel      │  Portal Afiliado                    │
+│  Web App (Next.js)  │  Mobile App (React Native/Expo)   │
+│  Admin Panel        │  Portal Afiliado                  │
 ├─────────────────────────────────────────────────────────┤
-│  CDN + WAF  (Cloudflare)                                │
-├─────────────────────────────────────────────────────────┤
-│  API GATEWAY / INGRESS (Routing)                        │
-│  Auth Middleware │ Rate Limiting │ Logging              │
+│  AUTHENTICATION & SECURITY                              │
+│  Firebase Auth (Identidad) │ Firestore Security Rules   │
 ├───────────┬───────────┬───────────┬────────────────────┤
-│  BFF Web  │ BFF Mobile│ BFF Admin │  Webhook Service   │
-├───────────┴───────────┴───────────┴────────────────────┤
-│  MONOLITO NESTJS (MÓDULOS INTERNOS)                     │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐  │
-│  │ Afiliados│ │Financiero│ │ I.A. Gen │ │ B2B/RRHH │  │
-│  └──────────┘ └──────────┘ └──────────┘ └──────────┘  │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐  │
-│  │Blockchain│ │OpenFinanc│ │ Eventos  │ │Comunic.  │  │
-│  └──────────┘ └──────────┘ └──────────┘ └──────────┘  │
-├─────────────────────────────────────────────────────────┤
-│  MESSAGE BROKER  (RabbitMQ)                            │
+│  BACKEND SERVERLESS (GOOGLE CLOUD/FIREBASE)             │
+│  ┌────────────┐ ┌────────────┐ ┌─────────────────┐    │
+│  │ Cloud Funcs│ │ Server Act.│ │ Firebase Storage│    │
+│  └────────────┘ └────────────┘ └─────────────────┘    │
+│  ┌────────────┐ ┌────────────┐ ┌─────────────────┐    │
+│  │ FCM (Push) │ │ App Check  │ │ EventArc        │    │
+│  └────────────┘ └────────────┘ └─────────────────┘    │
 ├─────────────────────────────────────────────────────────┤
 │  CAPA DE DATOS                                          │
-│  PostgreSQL (principal) │ Redis (cache/sessions)        │
-│  ClickHouse (analytics) │ S3/MinIO (files)              │
-│  ElasticSearch (search) │ TimescaleDB (métricas)        │
+│  Cloud Firestore (NoSQL, principal en tiempo real)      │
 └─────────────────────────────────────────────────────────┘`
       },
       {
         label: "ESTRUCTURA DE REPOSITORIOS (MONOREPO)",
         color: "#F59E0B",
-        content: `TOOLING MONOREPO: Turborepo + pnpm workspaces
+        content: `ESTRUCTURA DEL PROYECTO (NEXT.JS + FIREBASE):
 
-afiliadosos/
-├── apps/
-│   ├── web/                    # React 18 + Vite (Panel Admin/Superadmin)
-│   ├── mobile/                 # React Native + Expo SDK 51 (App Afiliados/Residentes)
-│   └── api/                    # NestJS Monolith (Core de la plataforma)
-├── packages/
-│   ├── ui/                     # Design system compartido (shadcn/ui config)
-│   ├── types/                  # TypeScript types e interfaces compartidas
-│   ├── utils/                  # Helpers compartidos (validación cédula/NIT Colombia)
-│   └── config/                 # ESLint, TSConfig, Prettier
-├── infra/
-│   ├── docker/                 # Dockerfiles para web y api
-│   ├── scripts/                # Seed, migraciones
-│   └── docker-compose.dev.yml  # Levanta Postgres, Redis, API y Web
-├── pnpm-workspace.yaml
-└── turbo.json`
+gestor-afiliados/
+├── src/
+│   ├── app/                    # Next.js App Router (Web App / Admin Dashboard)
+│   ├── components/             # React Components (shadcn/ui)
+│   ├── lib/
+│   │   └── firebase/           # Configuración de Firebase Client y Firebase Admin
+│   └── types/                  # Interfaces de colecciones de Firestore
+├── functions/                  # Firebase Cloud Functions (Node.js/TypeScript)
+├── public/                     # Assets estáticos
+├── firebase.json               # Configuración de hosting, firestore rules, etc.
+├── firestore.rules             # Reglas de seguridad Multi-tenant
+└── package.json                # Dependencias (Next, Firebase, Tailwind)`
       }
     ]`
       }
@@ -126,330 +114,239 @@ afiliadosos/
   },
   database: {
     title: "Esquema de Base de Datos",
-    subtitle: "PostgreSQL con Row-Level Security para Multi-tenancy",
+    subtitle: "Cloud Firestore (NoSQL) con Reglas de Seguridad Multi-tenant",
     blocks: [
       {
         label: "TENANTS, AFILIADOS Y CUOTAS",
         color: "#00E5A0",
-        content: `-- ============================================
--- SCHEMA: public (compartido entre tenants)
--- ============================================
+        content: `// ============================================
+// COLECCIONES PRINCIPALES EN FIRESTORE
+// ============================================
 
-CREATE TABLE tenants (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  slug            VARCHAR(50) UNIQUE NOT NULL,
-  name            VARCHAR(200) NOT NULL,
-  type            tenant_type, -- EDIFICIO|CLUB|FONDO|SINDICATO|ASOCIACION
-  nit             VARCHAR(20) UNIQUE,
-  settings        JSONB DEFAULT '{}',
-  created_at      TIMESTAMPTZ DEFAULT NOW()
-);
+// /tenants/{tenantId}
+{
+  id: "UID",
+  slug: "los-lagos",
+  name: "Conjunto Residencial Los Lagos",
+  type: "EDIFICIO", // EDIFICIO|CLUB|FONDO
+  nit: "900.123.456-1",
+  settings: { color: "#blue", logo: "url..." },
+  createdAt: Timestamp
+}
 
-CREATE TABLE afiliados (
-  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id         UUID NOT NULL REFERENCES tenants(id),
-  user_id           UUID REFERENCES users(id),
-  numero_afiliado   VARCHAR(50), -- ej: Apto 301, Carnet 293
-  cedula            VARCHAR(12) NOT NULL,
-  nombres           VARCHAR(200) NOT NULL,
-  apellidos         VARCHAR(200) NOT NULL,
-  email             VARCHAR(200),
-  celular           VARCHAR(20),
-  estado            VARCHAR(50) DEFAULT 'ACTIVO', -- ACTIVO|INACTIVO|MORA
-  tipo_miembro      VARCHAR(50), -- PROPIETARIO|RESIDENTE|TITULAR|BENEFICIARIO
-  carnet_qr_token   TEXT UNIQUE,
-  created_at        TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(tenant_id, cedula)
-);
+// /users/{userId} (Sincronizado con Firebase Auth)
+{
+  id: "UID_AUTH",
+  email: "usuario@app.com",
+  phone: "+57300...",
+  fcmTokens: ["token1", "token2"],
+  createdAt: Timestamp
+}
 
-CREATE TABLE beneficiarios (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  afiliado_id     UUID NOT NULL REFERENCES afiliados(id) ON DELETE CASCADE,
-  tenant_id       UUID NOT NULL,
-  nombres         VARCHAR(200) NOT NULL,
-  parentesco      VARCHAR(50),
-  edad            INT,
-  is_active       BOOLEAN DEFAULT TRUE
-);
+// /tenants/{tenantId}/afiliados/{afiliadoId} (Subcolección)
+{
+  id: "UID_AFILIADO",
+  userId: "UID_AUTH", // Referencia al usuario global
+  numeroAfiliado: "Apto 301",
+  cedula: "1020...",
+  nombres: "Juan",
+  apellidos: "Perez",
+  estado: "ACTIVO", // ACTIVO|INACTIVO|MORA
+  tipoMiembro: "PROPIETARIO",
+  carnetQrToken: "eyJhbG...",
+  createdAt: Timestamp
+}
 
-CREATE TABLE planes_membresia (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id       UUID NOT NULL,
-  nombre          VARCHAR(100) NOT NULL,  -- ej: Cuota Administración Tipo A, Membresía Familiar
-  valor           DECIMAL(15,2) NOT NULL, -- Valor fijo COP
-  periodicidad    VARCHAR(20) DEFAULT 'MENSUAL'
-);
+// /tenants/{tenantId}/planes_membresia/{planId}
+{
+  id: "UID_PLAN",
+  nombre: "Administración Tipo A",
+  valor: 250000,
+  periodicidad: "MENSUAL"
+}
 
-CREATE TABLE cuotas (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id       UUID NOT NULL,
-  afiliado_id     UUID NOT NULL REFERENCES afiliados(id),
-  plan_id         UUID REFERENCES planes_membresia(id),
-  periodo         VARCHAR(7) NOT NULL, -- 2026-03
-  valor           DECIMAL(15,2) NOT NULL,
-  fecha_vencimiento DATE NOT NULL,
-  estado          VARCHAR(20) DEFAULT 'PENDIENTE', -- PENDIENTE|PAGADA|VENCIDA|EXONERADA
-  transaction_id  TEXT,
-  created_at      TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(tenant_id, afiliado_id, periodo)
-);`
+// /tenants/{tenantId}/cuotas/{cuotaId}
+{
+  id: "UID_CUOTA",
+  afiliadoId: "UID_AFILIADO",
+  planId: "UID_PLAN",
+  periodo: "2026-03",
+  valor: 250000,
+  fechaVencimiento: Timestamp,
+  estado: "PENDIENTE", // PENDIENTE|PAGADA|VENCIDA
+  transactionId: null,
+  createdAt: Timestamp
+}`
       },
       {
         label: "ASAMBLEAS Y VOTACIONES (DIFERENCIADOR)",
         color: "#F59E0B",
-        content: `-- ============================================
--- ASAMBLEAS Y VOTACIONES LIVE
--- ============================================
+        content: `// ============================================
+// ASAMBLEAS Y VOTACIONES LIVE (FIRESTORE)
+// ============================================
 
-CREATE TABLE asambleas (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id       UUID NOT NULL,
-  titulo          VARCHAR(300) NOT NULL,
-  fecha           TIMESTAMPTZ NOT NULL,
-  modalidad       VARCHAR(20) DEFAULT 'PRESENCIAL', -- VIRTUAL|HIBRIDA
-  link_streaming  TEXT,
-  quorum_requerido DECIMAL(5,2), -- ej: 50.01
-  estado          VARCHAR(20) DEFAULT 'PROGRAMADA', -- PROGRAMADA|EN_CURSO|CERRADA
-  created_at      TIMESTAMPTZ DEFAULT NOW()
-);
+// /tenants/{tenantId}/asambleas/{asambleaId}
+{
+  id: "UID_ASAMBLEA",
+  titulo: "Asamblea Ordinaria 2026",
+  fecha: Timestamp,
+  modalidad: "HIBRIDA",
+  linkStreaming: "https://zoom.us/...",
+  quorumRequerido: 50.01,
+  estado: "EN_CURSO",
+  createdAt: Timestamp
+}
 
-CREATE TABLE asamblea_asistencia (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  asamblea_id     UUID NOT NULL REFERENCES asambleas(id),
-  afiliado_id     UUID NOT NULL REFERENCES afiliados(id),
-  tenant_id       UUID NOT NULL,
-  coeficiente     DECIMAL(5,2) DEFAULT 1.00, -- Peso del voto (P.H.) o 1 (Club)
-  check_in_at     TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(asamblea_id, afiliado_id)
-);
+// /tenants/{tenantId}/asambleas/{asambleaId}/asistentes/{afiliadoId} (Subcolección)
+{
+  afiliadoId: "UID_AFILIADO",
+  coeficiente: 1.5, // Peso del voto
+  checkInAt: Timestamp
+}
 
-CREATE TABLE votaciones (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  asamblea_id     UUID NOT NULL REFERENCES asambleas(id),
-  tenant_id       UUID NOT NULL,
-  pregunta        TEXT NOT NULL,
-  opciones        JSONB NOT NULL, -- [{id:1, texto:"Aprobar"}, {id:2, texto:"Rechazar"}]
-  tipo            VARCHAR(20) DEFAULT 'ABIERTA', -- ABIERTA|SECRETA
-  estado          VARCHAR(20) DEFAULT 'ABIERTA', -- ABIERTA|CERRADA
-  abre_at         TIMESTAMPTZ DEFAULT NOW(),
-  cierra_at       TIMESTAMPTZ
-);
+// /tenants/{tenantId}/asambleas/{asambleaId}/votaciones/{votacionId}
+{
+  id: "UID_VOTACION",
+  pregunta: "¿Aprobar presupuesto 2026?",
+  opciones: [{id: "1", texto: "Sí"}, {id: "2", texto: "No"}],
+  tipo: "ABIERTA",
+  estado: "ABIERTA", // ABIERTA|CERRADA
+  abreAt: Timestamp,
+  cierraAt: null
+}
 
-CREATE TABLE votos (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  votacion_id     UUID NOT NULL REFERENCES votaciones(id),
-  afiliado_id     UUID NOT NULL REFERENCES afiliados(id),
-  opcion_id       TEXT NOT NULL,
-  peso_voto       DECIMAL(5,2) DEFAULT 1.00,
-  hash_voto       TEXT NOT NULL, -- HMAC(opcion_id + afiliado_id + secret) para integridad
-  created_at      TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(votacion_id, afiliado_id)
-);`
+// /tenants/{tenantId}/asambleas/{asambleaId}/votaciones/{votacionId}/votos/{afiliadoId}
+{
+  afiliadoId: "UID_AFILIADO",
+  opcionId: "1",
+  pesoVoto: 1.5,
+  hashVoto: "HMAC_HASH", // Para integridad inmutable
+  createdAt: Timestamp
+}`
       },
       {
         label: "RESERVAS, COMUNIDAD Y AUDITORÍA",
         color: "#14B8A6",
-        content: `-- ============================================
--- RESERVAS Y EVENTOS
--- ============================================
-CREATE TABLE espacios (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id       UUID NOT NULL,
-  nombre          VARCHAR(200) NOT NULL, -- Salón Comunal, Cancha de Tenis, Piscina
-  capacidad       INT,
-  costo_reserva   DECIMAL(15,2) DEFAULT 0,
-  reglas          TEXT,
-  foto_url        TEXT,
-  is_active       BOOLEAN DEFAULT TRUE
-);
+        content: `// ============================================
+// RESERVAS, EVENTOS Y COMUNIDAD
+// ============================================
 
-CREATE TABLE reservas (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  espacio_id      UUID NOT NULL REFERENCES espacios(id),
-  afiliado_id     UUID NOT NULL REFERENCES afiliados(id),
-  tenant_id       UUID NOT NULL,
-  fecha_inicio    TIMESTAMPTZ NOT NULL,
-  fecha_fin       TIMESTAMPTZ NOT NULL,
-  estado          VARCHAR(20) DEFAULT 'CONFIRMADA', -- PENDIENTE|CONFIRMADA|CANCELADA
-  notas           TEXT
-);
+// /tenants/{tenantId}/espacios/{espacioId}
+{
+  id: "UID_ESPACIO",
+  nombre: "Salón Comunal Principal",
+  capacidad: 100,
+  costoReserva: 50000,
+  reglas: "No se permite música después de las 10pm",
+  fotoUrl: "gs://...",
+  isActive: true
+}
 
--- ============================================
--- COMUNIDAD Y FOROS
--- ============================================
-CREATE TABLE tablero_anuncios (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id       UUID NOT NULL,
-  titulo          VARCHAR(300) NOT NULL,
-  contenido       TEXT NOT NULL,
-  fijado          BOOLEAN DEFAULT FALSE,
-  creado_por      UUID REFERENCES users(id),
-  created_at      TIMESTAMPTZ DEFAULT NOW()
-);
+// /tenants/{tenantId}/reservas/{reservaId}
+{
+  id: "UID_RESERVA",
+  espacioId: "UID_ESPACIO",
+  afiliadoId: "UID_AFILIADO",
+  fechaInicio: Timestamp,
+  fechaFin: Timestamp,
+  estado: "CONFIRMADA", // PENDIENTE|CONFIRMADA|CANCELADA
+  notas: "Celebración de cumpleaños"
+}
 
--- ============================================
--- AUDITORÍA INMUTABLE
--- ============================================
-CREATE TABLE audit_logs (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  tenant_id       UUID NOT NULL,
-  user_id         UUID,
-  accion          VARCHAR(100) NOT NULL, -- CREATE|UPDATE|DELETE
-  entidad         VARCHAR(100) NOT NULL, -- afiliados|cuotas|etc
-  entidad_id      UUID,
-  datos_previos   JSONB,
-  datos_nuevos    JSONB,
-  ip              INET,
-  created_at      TIMESTAMPTZ DEFAULT NOW()
-);`
+// /tenants/{tenantId}/tablero_anuncios/{anuncioId}
+{
+  id: "UID_ANUNCIO",
+  titulo: "Mantenimiento Ascensores Torre B",
+  contenido: "El jueves no habrá ascensor entre 8am y 10am.",
+  fijado: true,
+  creadoPor: "UID_ADMIN",
+  createdAt: Timestamp
+}`
       }
     ]
   },
   backend: {
-    title: "Backend — Monolito NestJS",
-    subtitle: "Estructura, patrones y reglas de implementación (Modular Monolith)",
+    title: "Backend — Serverless Next.js & Firebase Functions",
+    subtitle: "Estructura, Server Actions y Cloud Functions",
     blocks: [
       {
-        label: "ESTRUCTURA BASE DEL MONOLITO (NESTJS)",
+        label: "ESTRUCTURA BASE DEL MONOLITO (FIREBASE/NEXT.JS)",
         color: "#00E5A0",
-        content: `STACK BACKEND:
+        content: `STACK BACKEND (SERVERLESS):
   Runtime:    Node.js 20 LTS + TypeScript 5.4
-  Framework:  NestJS 10 (Arquitectura Modular)
-  ORM:        Prisma 5 (PostgreSQL 16)
-  Validación: class-validator + class-transformer
-  Tests:      Jest + Supertest (cobertura mínima 80%)
-  Docs:       @nestjs/swagger (OpenAPI 3.1)
-  Colas:      BullMQ (respaldado por Redis 7)
-  WebSockets: @nestjs/websockets + socket.io (para asambleas en vivo)
+  Framework:  Next.js 16 (Server Actions & Route Handlers)
+  Database:   Firebase Admin SDK (Firestore)
+  Validación: Zod
+  Docs/Spec:  TypeScript Interfaces
+  Colas:      Firebase EventArc / Cloud Tasks
+  Real-time:  Firestore onSnapshot (Suscripciones nativas, sin websockets extras)
 
-ESTRUCTURA INTERNA (apps/api):
-src/
-├── main.ts                    # Bootstrap + Swagger
-├── app.module.ts              # Importa todos los módulos
-├── common/
-│   ├── decorators/            # @CurrentTenant, @Public
-│   ├── filters/               # GlobalExceptionFilter
-│   ├── guards/                # AuthGuard, RolesGuard
-│   └── middleware/            # TenantContextMiddleware
-├── lib/
-│   ├── prisma/                # PrismaService
-│   ├── email/                 # SendGrid wrapper
-│   ├── sms/                   # Twilio wrapper
-│   └── payments/              # Wompi SDK wrapper
-├── modules/
-│   ├── auth/                  # JWT auth y 2FA
-│   ├── tenant/                # Gestión tenants
-│   ├── afiliados/             # Afiliados y docs
-│   ├── financiero/            # Cuotas y cobros
-│   ├── asambleas/             # Quórum y votaciones live
-│   ├── eventos/               # Eventos y reservas
-│   └── comunicaciones/        # Push, email, sms async
-└── prisma/
-    └── schema.prisma          # Schema único de DB`
-      },,
+ESTRUCTURA INTERNA DE LÓGICA:
+gestor-afiliados/
+├── src/
+│   ├── app/
+│   │   ├── api/               # Next.js Route Handlers (Webhooks, Wompi)
+│   │   └── actions/           # Next.js Server Actions (Mutaciones)
+│   │       ├── auth.actions.ts
+│   │       ├── tenant.actions.ts
+│   │       ├── afialiado.actions.ts
+│   │       └── financiero.actions.ts
+│   └── lib/
+│       ├── firebase/
+│       │   ├── client.ts      # Auth y Firestore client
+│       │   └── admin.ts       # Firebase Admin init
+│       ├── email/             # SendGrid wrapper
+│       └── payments/          # Wompi SDK wrapper
+├── functions/                 # /functions folder (Firebase CLoud Functions)
+│   ├── src/
+│   │   ├── triggers/          # onCreate, onUpdate triggers de DB
+│   │   └── scheduled/         # Cron jobs (ej. generar cuotas mes)`
+      },
       {
         label: "REGLAS DE IMPLEMENTACIÓN BACKEND",
         color: "#F59E0B",
-        content: `TENANT CONTEXT (CRÍTICO):
-  - TODOS los endpoints reciben tenant_id desde el JWT
-  - Middleware TenantContextMiddleware extrae tenant_id y lo setea en
-    AsyncLocalStorage para que Prisma ejecute SET app.tenant_id = $1
-  - NUNCA pasar tenant_id como parámetro manual — siempre desde contexto
-  - Interceptor GlobalTenantInterceptor verifica que respuesta solo tenga
-    datos del tenant correcto (doble verificación)
+        content: `FIRESTORE SECURITY RULES (CRÍTICO):
+  - El corazón de la seguridad Multi-tenant. 
+  - Reglas aseguran que `request.auth.uid` pueda acceder a `/tenants/$(tenantId)` basado en su rol.
+  - El rol se inyecta en el Token de Auth usando Firebase Custom Claims: `claims.tenantRoles['TENANT_ID'] = 'ADMIN'`.
 
 AUTENTICACIÓN:
-  - JWT access token (15 min) + refresh token (30 días) en httpOnly cookie
-  - Roles: SUPERADMIN > ADMIN_ORG > TESORERO > SECRETARIO > AFILIADO
-  - Guard @Roles() en cada controller, @Public() para rutas abiertas
-  - 2FA opcional con TOTP (Google Authenticator compatible)
-  - Rate limiting: 100 req/min por IP, 1000 req/min por tenant
+  - Firebase Authentication maneja el ciclo de vida del usuario (Login, Password, MFA).
+  - Next.js usa `next-firebase-auth-edge` o lectura de cookies firmadas de Firebase para el entorno SSR y Server Actions.
+  - Roles controlados vía Custom Claims para no requerir llamadas a DB extra por request.
 
-RESPUESTAS API (FORMATO ESTÁNDAR):
-  {
-    "success": true,
-    "data": { ... },
-    "meta": {
-      "page": 1, "limit": 20, "total": 450,
-      "timestamp": "2026-03-15T10:00:00Z"
-    }
-  }
-
-  ERRORES:
-  {
-    "success": false,
-    "error": {
-      "code": "AFILIADO_NOT_FOUND",
-      "message": "El afiliado con cédula 12345678 no existe",
-      "details": [ ... ]  // validation errors array
-    }
-  }
+CLOUD FUNCTIONS Y EVENTOS (BACKGROUND):
+  - En lugar de RabbitMQ, Firebase maneja triggers: `onDocumentCreated('/tenants/{tenantId}/cuotas/{cuotaId}')`
+  - Cron Jobs: Firebase Functions Schedule (Google Cloud Scheduler) -> Ej. Ejecutar función cada 1 de mes para generar cuotas.
+  - Webhooks de Wompi se reciben en Cloud Functions HTTPS (más barato y seguro aislarlas).
 
 PAGINACIÓN:
-  - Todos los listados usan cursor-based pagination para performance
-  - Parámetros: ?page=1&limit=20&sortBy=created_at&order=desc
-  - Máximo limit=100 por request
-
-EVENTOS DE DOMINIO (RabbitMQ):
-  Cada servicio emite eventos al bus. Naming: [servicio].[entidad].[accion]
-  Ejemplos:
-    afiliados.afiliado.creado
-    financiero.cuota.pagada
-    financiero.cuota.vencida
-    comunicacion.email.enviado
-    eventos.asamblea.quorum_alcanzado`
+  - Cursor-based pagination de Firestore: `query(..., startAfter(lastDoc), limit(20))`.`
       },
       {
-        label: "ENDPOINTS PRINCIPALES (MONOLITO NESTJS)
+        label: "OPERACIONES PRINCIPALES (SERVER ACTIONS & DIRECT DB LECTURA)
 
-AUTH Y USUARIOS (/auth /users)
-  POST   /auth/login              # Access 15m, Refresh 30d
-  POST   /auth/refresh            # Refresh Token rotate
-  POST   /users/2fa/verify        # Code TOTP o PIN
+AUTH Y USUARIOS:
+  Firebase Auth UI / signInWithEmailAndPassword en cliente.
+  Server Action setea el session cookie si se requiere SSR.
 
-AFILIADOS Y TENANTS (/afiliados /tenants)
-  GET    /afiliados               # Paginación + Filtros Full
-  POST   /afiliados               # Admins agregan miembro
-  POST   /afiliados/import_csv    # Cargar Excel de copropietarios
-  GET    /afiliados/:id/carnet    # QR 24h firmado HMAC
+AFILIADOS Y TENANTS:
+  Lectura: Componentes cliente usando `useCollection` o getServerSideProps/RSC con Admin SDK.
+  Creación: Server Action `crearAfiliado(data)` valida rol, crea Auth User y crea Doc.
+  Importación: Firebase Cloud Function desencadenada por subida de Excel a Cloud Storage.
 
-CUOTAS Y COBROS (/cuotas /financiero)
-  GET    /cuotas                  # Listar pendientes
-  POST   /cuotas/generar_mes      # Job del dia 1 (Cron)
-  POST   /cuotas/cobro_masivo     # Enviar lote a Wompi (Async)
+CUOTAS Y COBROS:
+  Lectura: `collectionGroup('cuotas')` filtrando por `tenantId`.
+  Cobros Masivos: Server Action que invoca Wompi, o enqueue a un Cloud Task.
+  Webhooks Wompi: Function HTTPS independiente.
 
-ASAMBLEAS Y VOTAR (/asambleas /votar)
-  GET    /asambleas
-  POST   /asambleas
-  POST   /asambleas/:id/checkin   # Lector QR en puerta/webcam
-  GET    /asambleas/:id/quorum    # WebSocket live
+ASAMBLEAS Y VOTAR (REAL-TIME NATIVO):
+  Asistencia (Quórum): `onSnapshot('asistentes')` actualiza gráfico al instante.
+  Votación: Server Action para emitir voto usando Firestore Transaction (para atomicidad).
 
-  POST   /votaciones/abrir        # Activa la tarjeta en móviles
-  POST   /votaciones/:id/votar    # Afiliado vota (PIN o Biometría)
-  GET    /votaciones/:id/results  # Tabla de quesos instantánea
-
-ESPACIOS Y RESERVAS (/reservas)
-  GET    /espacios                # Catálogo de salones, bbqs
-  POST   /espacios/:id/reservar   # Afiliado pide fecha
-  PATCH  /reservas/:id/aprobar    # Admin concede espacio
-
-COMUNIDAD Y FORO (/comunidad /anuncios)
-  GET    /anuncios                # Cartelera digital
-  POST   /anuncios
-  POST   /foro_posts/:id/comment  # Afiliado responde discusion
-
-TENANT (solo ADMIN_ORG):
-  GET    /tenant/config             # configuración de la org
-  PATCH  /tenant/config             # actualizar config
-  GET    /tenant/billing            # info de facturación
-  GET    /tenant/stats              # métricas de uso
-
-SUPERADMIN (solo SUPERADMIN):
-  GET    /admin/tenants
-  POST   /admin/tenants
-  PATCH  /admin/tenants/:id/plan
-  PATCH  /admin/tenants/:id/status
-  GET    /admin/mrr                 # revenue metrics`
+RESERVAS Y COMUNIDAD:
+  Lectura de reservas: Suscripción en tiempo real a `/reservas` del tenant.
+  Crear anuncio: Cliente escribe directo a `/anuncios` (aprobado por Rules si es Admin) o usa Server Action.`
       }
     ]
   },
@@ -750,7 +647,7 @@ FIRMA ELECTRÓNICA:
   - Firma simple: checkbox + IP + timestamp (Habeas Data, comunicados)
   - Firma avanzada: CertiCámara o Docusign para créditos y contratos
   Guardar evidencia: screenshot firmado + metadata + PDF sellado`
-
+      },
       {
         label: "IA & BLOCKCHAIN & SEGUROS",
         color: "#EAB308",
@@ -767,7 +664,6 @@ BLOCKCHAIN (VOTACIONES):
 SEGUROS EMBEBIDOS (Insurtech):
   - APIs de aseguradoras (Ej: Sura, Bolivar) para cotizar y emitir mini-pólizas.
   - El sistema cobra la póliza junto con la cuota de afiliación mensual.`
-      },
       }
     ]
   },
@@ -778,26 +674,21 @@ SEGUROS EMBEBIDOS (Insurtech):
       {
         label: "AUTENTICACIÓN Y AUTORIZACIÓN",
         color: "#00E5A0",
-        content: `JWT STRATEGY:
-  - Access Token: 15 minutos, firmado RS256 (asymmetric)
-  - Refresh Token: 30 días, rotación obligatoria en cada uso
-  - Almacenamiento web: httpOnly cookie + SameSite=Strict
-  - Almacenamiento mobile: expo-secure-store (Keychain iOS / Keystore Android)
-  - Blacklist de tokens revocados en Redis (TTL = vida del token)
+        content: `FIREBASE AUTH + CUSTOM CLAIMS (JWT):
+  - Firebase emite un token JWT que expira en 1 hora, auto-renovado por el SDK.
+  - Almacenamiento web: Manejado por Firebase JS SDK (IndexDB/Local). Cookies para SSR.
+  - Custom Claims: `claims.tenantRoles = { "tenant_A": "ADMIN", "tenant_B": "AFILIADO" }`.
 
-ROLES Y PERMISOS (RBAC):
-  SUPERADMIN:  acceso total a todos los tenants (solo equipo AfiliadosOS)
-  ADMIN_ORG:   CRUD completo en su tenant
-  TESORERO:    gestión financiera + aprobación créditos
-  SECRETARIO:  gestión afiliados + comunicados + eventos
-  AFILIADO:    solo sus propios datos (lectura + pago cuotas)
-  ALIADO:      solo verificación de carné (ruta pública firmada)
+ROLES Y PERMISOS (RBAC EN FIRESTORE RULES):
+  SUPERADMIN:  acceso total (accede usando Firebase Admin SDK sin reglas).
+  ADMIN_ORG:   CRUD completo en subcolecciones de su tenant.
+  AFILIADO:    solo leer su info, pagar cuotas, leer anuncios.
+  Validación en rules: `allow read: if request.auth.token.tenantRoles[tenantId] == 'ADMIN';`
 
-MULTI-TENANCY SECURITY:
-  - PostgreSQL Row-Level Security forzado en TODAS las tablas
-  - Middleware verifica que JWT tenant_id == URL tenant_id
-  - Tests automáticos de "tenant bleeding" en CI
-  - Logs separados por tenant en ELK
+MULTI-TENANCY SECURITY INNATO:
+  - El diseño jerárquico `/tenants/{tenantId}/colecciones` hace que el aislamiento sea visual y lógico.
+  - Las reglas de Seguridad son compuestas al momento de despliegue.
+  - Tests automáticos de Firestore Rules en emulador local en CI.
 
 2FA:
   - TOTP compatible con Google Authenticator, Authy
@@ -809,27 +700,26 @@ MULTI-TENANCY SECURITY:
         label: "CIFRADO Y PROTECCIÓN DE DATOS",
         color: "#EF4444",
         content: `DATOS EN REPOSO:
-  - PostgreSQL: Transparent Data Encryption en disco (AWS RDS)
+  - Firestore: Cifrado en reposo predeterminado de Google Cloud
   - Campos ultra-sensibles cifrados a nivel aplicación (AES-256-GCM):
-    * cedula, salario_base, datos_bancarios, password_hash (bcrypt 12 rounds)
-  - S3: Server-Side Encryption SSE-KMS para documentos
-  - Backups cifrados diarios + semanal + mensual (retención 3 años)
+    * cedula, datos_bancarios
+  - Firebase Storage: Encriptación del lado del servidor (Google Cloud KMS)
+  - Backups automatizados en Firestore (Point-in-Time Recovery - PiTR) y backups diarios
 
 DATOS EN TRÁNSITO:
-  - TLS 1.3 obligatorio (HTTP/2)
+  - TLS 1.3 obligatorio (HTTP/2) en Firebase Hosting
   - HSTS con preload y includeSubDomains
-  - Certificate Pinning en app móvil
-  - Cloudflare WAF + DDoS protection
+  - App Check para App Móvil y Web (ReCaptcha V3 / DeviceCheck)
 
 LOGS DE AUDITORÍA (inmutables):
-  Tabla audit_logs con INSERT ONLY (sin UPDATE ni DELETE):
+  Colección audit_logs en Firestore (escrituras protegidas por Rules para no permitir updates/deletes):
   {
-    id, tenant_id, user_id, accion, entidad, entidad_id,
-    datos_antes (jsonb), datos_despues (jsonb),
-    ip, user_agent, timestamp
+    id, tenantId, userId, accion, entidad, entidadId,
+    datosAntes (map), datosDespues (map),
+    ip, userAgent, timestamp
   }
-  - Exportable por período para auditorías
-  - Almacenado en ClickHouse para consultas rápidas
+  - Exportable por período a BigQuery usando la extensión oficial de Firestore a BigQuery
+  - Almacenado en BigQuery para análisis histórico y retención a bajo costo
   - Retención: 10 años (regulatorio financiero Colombia)
 
 HEADERS DE SEGURIDAD:
@@ -852,35 +742,31 @@ VULNERABILITY MANAGEMENT:
     subtitle: "CI/CD, Kubernetes, monitoreo y escalabilidad",
     blocks: [
       {
-        label: "INFRAESTRUCTURA AWS",
+        label: "INFRAESTRUCTURA GOOGLE CLOUD & FIREBASE",
         color: "#FF6B35",
-        content: `REGIÓN PRINCIPAL: us-east-1 (latencia Colombia ~120ms)
-REGIÓN DR: us-west-2 (disaster recovery, cold standby)
+        content: `REGIÓN PRINCIPAL: us-central1 o us-east1
+REGIÓN DR: multi-region en Firestore para HA
 
-SERVICIOS AWS:
-  Compute:      EKS (Kubernetes 1.29) para microservicios
-  Base de datos:RDS PostgreSQL 16 (Multi-AZ, db.r6g.xlarge)
-  Cache:        ElastiCache Redis 7 (cluster mode, r6g.large)
-  Files:        S3 + CloudFront CDN para assets y documentos
-  Queue:        Amazon MQ (RabbitMQ) para eventos async
-  Email infra:  SES para emails transaccionales
-  Secrets:      AWS Secrets Manager (rotación automática)
-  DNS:          Route 53 + certificados ACM
-  Monitoring:   CloudWatch + X-Ray
+SERVICIOS GCP/FIREBASE:
+  Compute Web:  Firebase Hosting (App Next.js, Server Actions, API)
+  Compute Bg:   Firebase Cloud Functions (2nd Gen / Cloud Run)
+  Base de datos:Cloud Firestore (NoSQL, Native mode)
+  Files:        Cloud Storage for Firebase
+  Queue/Eventos:Eventarc + Google Cloud Tasks
+  Email infra:  SendGrid (externo)
+  Secrets:      Google Secret Manager (integrado con Cloud Functions)
+  Auth:         Firebase Authentication
+  Monitoring:   Google Cloud Logging + Firebase Crashlytics + Sentry
 
-KUBERNETES (EKS):
-  - Namespace por microservicio
-  - HPA (Horizontal Pod Autoscaler): scale por CPU >70%
-  - PDB (Pod Disruption Budget): mínimo 2 réplicas en producción
-  - Ingress: AWS Load Balancer Controller + cert-manager
-  - GitOps: ArgoCD para deployments declarativos
-  - Network Policies: cada servicio solo habla con sus dependencias
+SERVERLESS & ESCALABILIDAD (CLOUD RUN):
+  - Cloud Functions 2nd Gen corre sobre Cloud Run
+  - Auto-scaling nativo (de 0 a 1000 instancias) configurando concurrency.
+  - No hay administración de clusters Kubernetes, 100% BaaS y Serverless.
+  - Aislamiento de tenants garantizado por Firebase Security Rules de Firestore.
 
-DOCKER:
-  - Imágenes base: node:20-alpine (mínimo 50MB)
-  - Multi-stage builds obligatorios
-  - Vulnerabilities scan: Trivy en CI
-  - Registry: AWS ECR (private, lifecycle policies)`
+MONOREPO:
+  - Turborepo u NPM Workspaces.
+  - Despliegue independiente por packages (web, mobile, functions).`
       },
       {
         label: "CI/CD Y MONITOREO",
@@ -890,50 +776,43 @@ DOCKER:
 ON PULL REQUEST:
   1. lint (ESLint + Prettier)
   2. typecheck (tsc --noEmit)
-  3. tests unitarios (Jest, mín 80% cobertura)
-  4. tests integración (Supertest + TestContainers)
-  5. tests tenant-bleeding (seguridad multi-tenant)
-  6. build Docker image
-  7. scan vulnerabilidades (Trivy + Snyk)
-  8. preview deploy en entorno staging
+  3. tests unitarios (Jest/Vitest, mín 80% cobertura)
+  4. test Firebase Rules (Firebase Local Emulator)
+  5. preview channels en Firebase Hosting
 
 ON MERGE TO MAIN:
   1. Todo lo anterior +
-  2. Build + push a ECR
-  3. Deploy automático a staging
-  4. Smoke tests en staging
-  5. Notificación Slack
+  2. Integrar Cloud Functions y probar con emulador completo
+  3. Deploy a entorno de staging en Firebase (proyecto dev)
+  4. Notificación Slack
 
 ON RELEASE TAG (vX.Y.Z):
-  1. Deploy a producción (blue/green)
-  2. Smoke tests en producción
-  3. Notificación Slack + email team
-  4. Rollback automático si smoke tests fallan
+  1. Deploy a producción (Firebase proyecto prod)
+  2. Despliegue de Functions, Hosting y Firestore Rules
+  3. Smoke tests en producción
+  4. Notificación Slack + email team
 
 MONITOREO:
-  Métricas:     Prometheus + Grafana (dashboards por servicio)
-  Logs:         Loki + Grafana (búsqueda centralizada)
-  Trazas:       Jaeger (distributed tracing)
-  Errores:      Sentry (error tracking + performance)
-  Uptime:       Better Uptime (status page pública)
+  Métricas:     Google Cloud Monitoring
+  Logs:         Google Cloud Logging (logs estructurados de Functions y Next.js)
+  Errores Web:  Sentry para el cliente Next.js
+  Errores App:  Firebase Crashlytics en React Native
+  Uptime:       Google Cloud Uptime Checks
   SLOs:
-    API latencia p95 < 300ms
+    Endpoint P95 < 400ms (teniendo en cuenta Cold Starts de Serverless)
     Uptime > 99.9% mensual
-    Error rate < 0.1%
 
 ENTORNOS:
-  development:  Docker Compose local (todos los servicios)
-  staging:      EKS namespace staging (datos sintéticos)
-  production:   EKS namespace prod (HA, backups, monitoring)
+  development:  Firebase Local Emulator Suite (Firestore, Auth, Functions, Storage)
+  staging:      Proyecto de Firebase separado (gestor-afiliados-stg)
+  production:   Proyecto de Firebase principal (gestor-afiliados-prod)
 
-VARIABLES DE ENTORNO (documentar en .env.example):
-  DATABASE_URL, REDIS_URL, RABBITMQ_URL
-  JWT_PRIVATE_KEY, JWT_PUBLIC_KEY
+VARIABLES DE ENTORNO (Google Secret Manager / .env.example):
+  NEXT_PUBLIC_FIREBASE_API_KEY, NEXT_PUBLIC_FIREBASE_PROJECT_ID, ...
+  FIREBASE_SERVICE_ACCOUNT_JSON
   WOMPI_PUBLIC_KEY, WOMPI_PRIVATE_KEY
   SENDGRID_API_KEY, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
-  WHATSAPP_API_TOKEN, WHATSAPP_PHONE_ID
-  S3_BUCKET, S3_REGION, S3_ACCESS_KEY, S3_SECRET_KEY
-  SENTRY_DSN, SUPERADMIN_EMAIL`
+  SENTRY_DSN`
       }
     ]
   },
@@ -974,198 +853,93 @@ apartamentos, fondos de empleados, cooperativas, sindicatos, ONGs).
 Mercado: 22,000+ organizaciones en Colombia.
 
 FOCO PRINCIPAL — en orden de prioridad:
-1. EXPERIENCIA DEL AFILIADO: app móvil simple, carné QR, votaciones,
-   reservas de espacios, pago de cuota, comunicados, comunidad
+1. EXPERIENCIA DEL AFILIADO: app móvil simple, carné QR, votaciones live,
+   reservas de espacios, pago de cuota, comunicados.
 2. CONTROL DEL ADMINISTRADOR: dashboard central, gestión de miembros,
-   cobros automáticos, asambleas en vivo, comunicados segmentados
-3. COMUNIDAD: tablero de anuncios, foro interno, directorio de miembros
-
-LO QUE NO ES este sistema: motor de crédito complejo, nómina,
-contabilidad empresarial avanzada. Solo cuotas de membresía.
+   cobros automáticos (Wompi), asambleas en vivo con Firebase Realtime/Firestore.
+3. COMUNIDAD: tablero de anuncios, directorio de miembros.
 
 # STACK TÉCNICO
-Backend:   NestJS 10 + TypeScript 5.4 + Prisma 5 + PostgreSQL 16 + Redis 7
-Frontend:  React 18 + TypeScript + Vite + TanStack Router + Zustand +
-           TanStack Query v5 + shadcn/ui + Tailwind CSS + Recharts +
-           socket.io-client + Framer Motion
-Mobile:    React Native + Expo SDK 51 + Expo Router v3 + socket.io-client
-Monorepo:  Turborepo + pnpm workspaces
-Auth:      JWT RS256 (access 15min) + refresh 30d + 2FA TOTP + RBAC
-Colas:     BullMQ sobre Redis para emails/SMS/push async
-Pagos:     Wompi Colombia (PSE, Nequi, tarjetas, Efecty)
-Email:     SendGrid | SMS: Twilio | Push: Firebase FCM | WhatsApp: Meta API
-Files:     AWS S3 + CloudFront CDN
-WebSocket: socket.io + @nestjs/websockets (votaciones live)
-Tests:     Jest + Supertest (cobertura mínima 80% en services)
+Ecosistema: Google Cloud + Firebase (Firebase Authentication, Firestore, Storage)
+Backend:    Next.js 16 (App Router + Server Actions) funcionando como Monolito Serverless.
+            Firebase Cloud Functions v2 (Node.js 20) para integraciones background (triggers, crons, webhooks).
+Frontend:   React 18 + TypeScript + Next.js App Router + Tailwind CSS + shadcn/ui.
+            Zustand (estado global), TanStack Query o direct Firebase onSnapshot para real-time.
+Mobile:     React Native + Expo SDK 51 + Expo Router.
+Monorepo:   Turborepo o pnpm workspaces (packages: web, mobile, functions, types).
+Auth:       Firebase Authentication (Identidad + Firebase Custom Claims para Roles).
+Pagos:      Wompi Colombia (PSE, tarjetas, Nequi).
+Push:       Firebase Cloud Messaging (FCM).
 
-# ARQUITECTURA
-Monolito modular NestJS (un servicio, módulos independientes por feature).
-Multi-tenancy con PostgreSQL Row-Level Security:
-  SET app.tenant_id = '<uuid>' en cada conexión via middleware.
-  Todas las tablas tienen tenant_id + política RLS correspondiente.
+# ARQUITECTURA: BACKEND-AS-A-SERVICE (BaaS)
+Multi-tenancy a través de Firestore:
+- Los datos se dividen jerárquicamente: /tenants/{tenantId}/...
+- Firestore Security Rules protegen herméticamente cada tenant basándose en los Firebase Custom Claims inyectados desde Auth.
+El acceso a Firestore se hace directamente desde el Cliente (usando SDK web o Server Components) para aprovechar los streams (onSnapshot) nativos, en lugar de crear endpoints REST intermedios que complican el tiempo real.
 
-Módulos NestJS:
-  AuthModule | TenantModule | AfiliadosModule | FinancieroModule |
-  AsambleasModule | VotacionesModule | EventosModule | ReservasModule |
-  ComunicacionesModule | ForoModule | EncuestasModule | ReportesModule
+# BASE DE DATOS (CLOUD FIRESTORE) - Colecciones Principales
+- tenants (orgs)
+- users (auth users)
+- Subcolecciones dentro de /tenants/{tenantId}:
+  afiliados, planes_membresia, cuotas, asambleas, votaciones, espacios, reservas, anuncios, audit_logs.
 
-# BASE DE DATOS — TABLAS PRINCIPALES
-tenants, users, afiliados, beneficiarios, afiliado_documentos,
-planes_membresia, cuotas, transacciones,
-asambleas, asamblea_asistencia, votaciones, votos,
-eventos, evento_inscripciones,
-espacios, reservas,
-comunicados, tablero_anuncios, foro_posts, encuestas, encuesta_respuestas,
-audit_logs (INSERT ONLY — inmutable)
+# MÓDULO 1 — AFILIADOS Y TENANTS (MVP)
+Diseño de esquema Firestore y reglas de seguridad multi-tenant.
+CRUD de afiliados. Validaciones Colombia (Cédula 7-10 dígitos, Celular empieza por 3, 10 dígitos).
+Generación de carné QR: JSON stringificado + JWT firmado para validación.
+Firebase Auth integration + Custom Claims assignment.
 
-# MÓDULO 1 — AFILIADOS (MVP — implementar primero)
-Schema Prisma completo con todas las tablas.
-CRUD completo de afiliados con validaciones Colombia:
-  — cédula: 7-10 dígitos numéricos
-  — celular: 10 dígitos empezando en 3
-  — NIT: 9 dígitos + dígito de verificación
-Generación de carné QR: token rotativo 24h firmado con HMAC-SHA256.
-Importación masiva CSV/Excel con validación y reporte de errores.
-Frontend: tabla con búsqueda instantánea + filtros + perfil 360°.
-Perfil 360°: tabs General | Cuotas | Eventos | Votaciones | Docs | Notas.
+# MÓDULO 2 — CUOTAS (membresía)
+Generación automática de cuotas el día 1: vía Cloud Scheduler trigger -> Cloud Function (genera cuotas para cada afiliado activo).
+Cobro Wompi: Server Action llama a Wompi. Cloud Function HTTP expone webhook protegido para recibir el estado TRANSACTION_STATUS_UPDATED.
+App Móvil: Afiliado ve cuota pendiente -> Pagar con Wompi widget / Nequi push.
 
-# MÓDULO 2 — CUOTAS (solo membresía, no crédito)
-Planes de membresía: valor fijo COP por categoría.
-Generación automática de cuotas: cron día 1 de cada mes.
-Cobro automático: Wompi batch, máx 1000/día, webhook para confirmación.
-Recordatorios automáticos: D-3, D-1, D+1, D+7 vía BullMQ.
-Vista mora: tabla accionable con acciones bulk (enviar recordatorio, exonerar).
-Afiliado en app: ver cuota pendiente + pagar en 2 taps.
+# MÓDULO 3 — ASAMBLEAS Y VOTACIONES (REAL-TIME NATIVO)
+Crear asamblea: modalidad hibrida, quórum.
+Live Dashboard asamblea (Admin): Suscripción onSnapshot a /asambleas/{id}/asistentes y cálculo de % quórum.
+Check-in: App del admin escanea QR de app afiliado, Server Action valida y agrega a asistente.
+Votaciones Live:
+  Admin crea doc de votación. Se propaga vía snapshot a las apps.
+  Push notif FCM a participantes.
+  Afiliados votan, se añade a /votos subcolección. Rule prohíbe votos dobles.
 
-# MÓDULO 3 — ASAMBLEAS Y VOTACIONES (módulo diferenciador)
-Crear asamblea: título, fecha, lugar, modalidad, % quórum requerido.
-Panel admin en vivo (WebSocket):
-  — Lista check-in en tiempo real
-  — % quórum alcanzado (alerta al llegar al mínimo)
-  — Crear y abrir votaciones durante la asamblea
-Check-in: QR del carné leído por cámara web del admin.
-Votación en tiempo real:
-  — Admin abre votación → push broadcast a todos los afiliados
-  — Afiliado: recibe notificación → vota con PIN/biometría → confirmación
-  — Resultados: live si es abierta, al cerrar si es secreta
-  — UNIQUE constraint + HMAC para integridad del voto
-Acta automática: PDF con asistentes, quórum y resultados de votaciones.
-WebSocket events: votacion:abierta, votacion:resultado, asamblea:quorum,
-                  asamblea:checkin
+# MÓDULO 4 — EVENTOS, TABLERO Y RESERVAS
+Espacios (ej. salón comunal, cancha de tenis).
+Reservas: onSnapshot en tiempo real del calendario semanal.
+Tablero de Anuncios: posts de la administración propulsados por suscripción Firestore.
 
-# MÓDULO 4 — EVENTOS Y RESERVAS
-Eventos: CRUD con aforo, costo, inscripción, check-in por QR.
-Espacios: nombre, foto, capacidad, horarios disponibles, reglas.
-Reservas: calendario de disponibilidad semanal, reservar desde app,
-          aprobar/rechazar desde panel admin.
-Afiliado en app: tab Agenda con eventos + mis reservas + asambleas.
+# APP MÓVIL (REACT NATIVE / EXPO) — AFILIADO
+Onboarding, FaceID/TouchID (expo-local-authentication), FCM Tokens (expo-notifications).
+Bottom Tabs: Inicio (QR + Cuota pago), Agenda, Votar, Reservas.
+Animación Carné Flip 3D (React Native Reanimated).
 
-# MÓDULO 5 — COMUNICACIONES OMNICANAL
-Canales: Push FCM, Email SendGrid, SMS Twilio, WhatsApp Meta API.
-Segmentación: estado, categoría, unidad, mora, participación, tags.
-Tipos: URGENTE, INFORMATIVO, CONVOCATORIA, RECORDATORIO.
-Auto-comunicados: cuota vencida, asamblea próxima, evento próximo.
-Cola BullMQ: envíos async con reintentos, stats en tiempo real.
-Tablero de anuncios: visibles en home de la app, sin ser intrusivos.
-Foro: posts + respuestas con moderación por admin.
-Encuestas: preguntas + opciones + resultados solo visibles al admin.
+# PANEL ADMIN WEB (NEXT.JS APP ROUTER)
+Dashboard de métricas (Cuotas pagadas, en mora, afiliados).
+App Router features: Layouts anidados por tenant /admin/[tenantId]/...
+Tablas con Shadcn + TanStack Table para gestión de afiliados e historial.
 
-# APP MÓVIL (afiliado) — PANTALLAS PRIORITARIAS
-Onboarding: seleccionar org → cédula → OTP → PIN → biometría → home (3 min).
-Bottom tabs: Inicio | Agenda | Votar | Espacios | Yo
+# SEGURIDAD Y DEVOPS
+Firestore Rules inexpugnables usando request.auth.token.tenantRoles.
+Deploy GitHub Actions automatizado de Firebase Hosting, Cloud Functions y rules.
+Linting, Typechecking estricto y Testing con Firebase Local Emulator Suite.
 
-TAB INICIO:
-  — Carné virtual con flip 3D (frente: foto+datos, reverso: QR grande)
-  — Estado cuenta: al día / cuota pendiente + botón pagar
-  — Próximo evento + últimas noticias
+# DISEÑO VISUAL Y UI
+Admin UI oscura: Fondo #060B14, border #1A2535, primario verde #00E5A0.
+Afiliado UI clara: Fondo #F8FAF9, primario #0F6E56.
+Tipografía: Syne (headings) + IBM Plex Sans (cuerpo textual).
+Componentes base: shadcn/ui.
 
-TAB VOTAR (resaltado cuando hay votación abierta):
-  — Lista votaciones activas con tiempo restante
-  — Pantalla votación: opciones como tarjetas + confirmar con PIN
-  — Historial de participación
+# ENTREGABLES INICIALES ESPERADOS
+1. Estructura de Firebase Config y firestore.rules inicial.
+2. Seed inicial (script Node con Firebase Admin SDK) poblador de 1 tenant y 2 usuarios.
+3. Componentes Base de Next.js (Dashboard layout).
+4. Implementación de login y manejo Firebase Auth.
+5. Módulo Afiliados (Vista Listado + Modal creación).
 
-TAB ESPACIOS:
-  — Lista espacios con foto
-  — Calendario disponibilidad + reservar
-
-TAB YO (perfil):
-  — Datos, beneficiarios, documentos, historial cuotas, notificaciones
-
-CARNÉ VIRTUAL:
-  — Proporción credit card (ratio 1.586:1)
-  — Frente: logo org + foto + nombre + número + categoría
-  — Reverso: QR rotativo grande + código de barras
-  — HMAC-SHA256 para verificación offline
-  — Shimmer CSS en hover para sensación premium
-  — Guardar como imagen: expo-media-library + ViewShot
-
-# PANEL ADMIN WEB — VISTAS PRIORITARIAS
-Dashboard: KPIs (afiliados activos, recaudo mes, % mora, eventos próximos),
-           gráfico ingresos 12 meses, top 10 mora, actividad reciente live.
-Afiliados: tabla búsqueda + filtros + acciones bulk + exportar.
-Panel asamblea en vivo: check-in live + quórum % + votaciones.
-Votaciones: crear, abrir/cerrar, ver resultados en tiempo real.
-Comunicados: editor + segmentación + programar + stats.
-Reservas: calendario semanal todos los espacios.
-Reportes: PDF/Excel de afiliados, cuotas, asistencia, participación.
-
-# SEGURIDAD Y CUMPLIMIENTO
-Multi-tenancy: RLS en todas las tablas. NUNCA hardcodear tenant_id.
-JWT: access 15min + refresh 30d (rotación). httpOnly cookie en web.
-2FA TOTP obligatorio para admins, opcional para afiliados.
-Audit log inmutable (INSERT ONLY) en todas las operaciones CRUD.
-Habeas Data Ley 1581/2012: formulario de aceptación en onboarding.
-Campos cifrados AES-256: cédula, celular, email.
-Rate limiting: 100 req/min IP, 5 intentos fallidos → bloqueo 15min.
-
-# DISEÑO VISUAL
-Paleta (fondo claro para app afiliado, oscuro para panel admin):
-  Admin dark:  Fondo #060B14, superficie #0D1520, borde #1A2535,
-               texto #E8EDF5, muted #8896A5, primario #00E5A0
-  Afiliado light: Fondo #F8FAF9, superficie #FFFFFF, borde #E0EDE8,
-                  texto #1A2B25, primario #0F6E56, acento #1D9E75
-Tipografía: Syne (headings 600-800) + IBM Plex Sans (body) — NUNCA Inter
-Animaciones: Framer Motion (web) + Reanimated 3 (mobile)
-White-label: colores del tenant desde /tenant/config en cada app
-
-# LOCALIZACIÓN COLOMBIA
-Moneda: COP, formato: 1.500.000 (punto miles, sin decimales)
-Zona horaria: America/Bogota (UTC-5, default en todos los timestamps)
-Festivos: librería colombia-holidays (no cobrar en festivos)
-SMMLV 2026: $1.423.500 COP
-Celular: regex /^3[0-9]{9}$/ (10 dígitos, empieza en 3)
-Cédula: regex /^[0-9]{7,10}$/ (7-10 dígitos)
-
-# ENTREGABLES EN ORDEN (confirmar cada uno antes de continuar)
-1. docker-compose.dev.yml con postgres, redis, api, web
-2. Schema Prisma completo con TODAS las tablas + migraciones
-3. Seed script: 3 tenants demo (club, edificio, fondo) con 30 afiliados c/u
-4. AfiliadosModule completo (NestJS) con todos los endpoints
-5. FinancieroModule (cuotas y cobros)
-6. AsambleasModule + VotacionesModule con WebSocket
-7. EventosModule + ReservasModule
-8. ComunicacionesModule con BullMQ workers
-9. TenantModule + AuthModule + guard RBAC
-10. Frontend web: layout + dashboard + módulo afiliados completo
-11. Frontend web: asambleas en vivo + votaciones real-time
-12. App móvil: onboarding + carné virtual + tab votaciones
-13. App móvil: cuotas + pago + agenda + espacios
-14. Tests (80% cobertura en services)
-15. Swagger OpenAPI completo
-16. README con setup local + variables de entorno
-
-# REGLAS TÉCNICAS (no negociables)
-— TypeScript strict mode, zero 'any'
-— Multi-tenancy: tenant_id SIEMPRE desde contexto, nunca hardcodeado
-— Todos los listados: cursor-based pagination
-— Formato respuesta: {success, data, meta} en éxito / {success, error} en fallo
-— Conventional commits en cada entregable
-— Zero console.log en producción (usar Logger de NestJS)
-— Health check en GET /health (liveness probe)
-— Todas las variables de entorno documentadas en .env.example
-— Máximo 1 responsabilidad por service/controller
-
-Empieza por: docker-compose.dev.yml + schema Prisma + seed.
+Reglas estrictas:
+- NUNCA usar PostgreSQL/Prisma/AWS, aquí usamos Firebase y GCP.
+- Types seguros derivados de la estructura Firestore.
+Empieza por inicializar el proyecto Next.js y configurar el firebase.json + rules.
 =============================================================`
       }
     ]
