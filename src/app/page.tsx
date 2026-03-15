@@ -5,207 +5,446 @@ import {
   ArrowRight,
   Shield,
   Zap,
-  Layers,
-  Bot,
-  Link as LinkIcon,
-  Gamepad2,
-  Wallet
+  TrendingDown,
+  Clock,
+  CheckCircle2,
+  PlayCircle,
+  BarChart3,
+  Smartphone,
+  ChevronRight,
+  Users
 } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#020617] text-[#E8EDF5] selection:bg-[#0D9488]/30 font-sans antialiased overflow-x-hidden">
-      {/* Dynamic Background Elements */}
+      {/* Background Gradients */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[#0D9488]/10 rounded-full blur-[150px] animate-pulse-slow" />
-        <div className="absolute bottom-[-10%] left-[-20%] w-[600px] h-[600px] bg-[#2563EB]/10 rounded-full blur-[150px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[40%] left-[30%] w-[400px] h-[400px] bg-[#0ea5e9]/5 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '4s' }} />
-        
-        {/* Subtle noise pattern */}
-        <div className="absolute inset-0 opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-50 mix-blend-overlay" />
+        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#0D9488]/15 rounded-full blur-[120px] animate-pulse-slow" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#2563EB]/15 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
+        <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
       </div>
 
-      {/* Modern Navigation */}
-      <nav className="sticky top-0 z-50 backdrop-blur-2xl border-b border-white/5 bg-[#020617]/60">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 backdrop-blur-2xl border-b border-white/5 bg-[#020617]/80 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-[#0D9488] to-[#01a877] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(0,229,160,0.3)]">
-              <Layers className="text-[#020617]" size={20} strokeWidth={2.5} />
+              <Building2 className="text-[#020617]" size={20} strokeWidth={2.5} />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">
               Afiliados<span className="text-[#0D9488]">OS</span>
             </span>
           </div>
           
-          <div className="hidden md:flex items-center gap-8 text-[13px] font-semibold text-white/60">
-            <a href="#vision" className="hover:text-white transition-colors">Visión</a>
-            <a href="#modulos" className="hover:text-white transition-colors">Super Módulos</a>
-            <a href="#tecnologia" className="hover:text-white transition-colors">Tecnología</a>
+          <div className="hidden md:flex items-center gap-8 text-[13px] font-bold text-white/70 uppercase tracking-wider">
+            <a href="#roi" className="hover:text-[#0D9488] transition-colors">ROI</a>
+            <a href="#modulos" className="hover:text-[#0D9488] transition-colors">Características</a>
+            <a href="#testimonios" className="hover:text-[#0D9488] transition-colors">Testimonios</a>
           </div>
 
-          <Link 
-            href="/dashboard" 
-            className="px-6 py-2.5 rounded-full bg-white/5 text-white text-sm font-semibold border border-white/10 hover:bg-[#0D9488] hover:text-[#020617] hover:border-transparent transition-all shadow-lg backdrop-blur-md"
-          >
-            Abrir App
-          </Link>
+          <div className="flex items-center gap-4">
+             <Link href="/dashboard" className="hidden md:block text-sm font-bold text-white hover:text-[#0D9488] transition-colors">
+               Iniciar Sesión
+             </Link>
+             <Link 
+               href="/dashboard" 
+               className="px-6 py-2.5 rounded-xl bg-[#0D9488] text-[#020617] text-sm font-black border border-transparent hover:bg-white transition-all shadow-[0_0_20px_rgba(0,229,160,0.2)]"
+             >
+               Ver Demo
+             </Link>
+          </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <header className="relative pt-24 pb-20 px-6 z-10 w-full flex flex-col items-center justify-center text-center">
-        <div className="max-w-5xl mx-auto space-y-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#0D9488]/30 bg-[#0D9488]/10 text-[#0D9488] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(0,229,160,0.15)] animate-float">
-            <Zap size={14} fill="currentColor" /> El Sistema Operativo para Comunidades
+      <header className="relative pt-40 pb-20 px-6 z-10 w-full flex flex-col items-center justify-center text-center min-h-[90vh]">
+        <div className="max-w-5xl mx-auto space-y-8 relative z-20">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#0D9488]/30 bg-[#0D9488]/10 text-[#0D9488] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(0,229,160,0.15)] animate-bounce-slow">
+            <Zap size={14} fill="currentColor" /> El Software Definitivo para Propiedad Horizontal
           </div>
           
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] text-white">
-            GESTIÓN DE AFILIADOS <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0D9488] via-[#2563EB] to-[#0ea5e9]">
-              NIVEL MONSTRUO
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-white">
+            Automatiza tu Copropiedad. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0D9488] via-[#3B82F6] to-[#0ea5e9]">
+              Multiplica tu Recaudo.
             </span>
           </h1>
           
-          <p className="max-w-2xl mx-auto text-xl md:text-2xl text-white/50 font-medium leading-relaxed">
-            Reemplaza tu software legacy, Excel y WhatsApp por un ecosistema unificado para Clubes, Edificios y Asociaciones. 
-            Carné digital, votaciones en línea, reservas de espacios y cobranza automática.
+          <p className="max-w-3xl mx-auto text-lg md:text-2xl text-white/60 font-medium leading-relaxed">
+            Elimina el Excel, los correos perdidos y las asambleas caóticas. AfiliadosOS es el ecosistema Premium que conecta a los administradores, contadores y residentes en una sola plataforma en tiempo real.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-5 justify-center pt-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
             <Link 
-              href="/dashboard" 
-              className="group relative px-10 py-5 rounded-2xl bg-[#0D9488] text-[#020617] font-bold text-sm uppercase tracking-wide overflow-hidden transition-all hover:scale-105 shadow-[0_0_40px_rgba(0,229,160,0.3)]"
+               href="/dashboard" 
+               className="group relative px-8 py-4 rounded-xl bg-[#0D9488] text-[#020617] font-black text-sm uppercase tracking-widest overflow-hidden transition-all hover:scale-105 shadow-[0_0_30px_rgba(0,229,160,0.4)] flex items-center justify-center gap-2"
             >
-              <div className="absolute inset-0 w-1/4 h-full bg-white/30 -skew-x-12 -translate-x-full group-hover:translate-x-[500%] transition-transform duration-700 ease-out" />
-              Ingresar al Demo Interactivo
+               Entrar al Demo <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </Link>
+            <button className="px-8 py-4 rounded-xl bg-white/5 hover:bg-white/10 text-white font-bold text-sm transition-all border border-white/10 flex items-center justify-center gap-2 backdrop-blur-sm">
+               <PlayCircle size={18} /> Ver Casos de Éxito
+            </button>
           </div>
-        </div>
 
-        {/* Dashboard Preview mockup */}
-        <div className="mt-28 relative w-full max-w-6xl mx-auto perspective-1000 group">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0D9488]/20 to-transparent blur-3xl opacity-50 transition-opacity group-hover:opacity-70" />
-          
-          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#020617]/80 backdrop-blur-xl shadow-2xl transform rotate-x-12 scale-100 transition-transform duration-700 ease-out group-hover:rotate-x-0 group-hover:scale-[1.02]">
-            {/* Fake Mac Header */}
-            <div className="h-8 bg-white/5 border-b border-white/10 flex items-center px-4 gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/80" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-              <div className="w-3 h-3 rounded-full bg-green-500/80" />
-            </div>
-            
-            <div className="p-8 grid grid-cols-12 gap-6 opacity-80 group-hover:opacity-100 transition-opacity">
-              {/* Fake Sidebar */}
-              <div className="col-span-3 space-y-4">
-                <div className="h-8 w-32 bg-white/10 rounded" />
-                <div className="space-y-2 mt-8">
-                  {[1,2,3,4,5].map(i => <div key={i} className="h-10 w-full bg-white/5 rounded-lg" />)}
-                </div>
-              </div>
-              {/* Fake Content */}
-              <div className="col-span-9 space-y-6">
-                <div className="flex gap-4">
-                  <div className="flex-1 h-32 bg-gradient-to-br from-[#0D9488]/20 to-transparent border border-[#0D9488]/20 rounded-2xl" />
-                  <div className="flex-1 h-32 bg-gradient-to-br from-[#2563EB]/20 to-transparent border border-[#2563EB]/20 rounded-2xl" />
-                  <div className="flex-1 h-32 bg-gradient-to-br from-[#0ea5e9]/20 to-transparent border border-[#0ea5e9]/20 rounded-2xl" />
-                </div>
-                <div className="h-64 w-full bg-white/5 border border-white/10 rounded-2xl" />
-              </div>
-            </div>
+          <div className="pt-16 flex flex-col items-center gap-4 opacity-70">
+             <p className="text-xs font-bold uppercase tracking-widest text-white/50">CONFIADO POR MÁS DE 500 CONJUNTOS, CLUBES Y ASOCIACIONES</p>
+             <div className="flex flex-wrap justify-center gap-8 md:gap-16 items-center grayscale opacity-60 mix-blend-screen">
+                <h3 className="text-2xl font-black tracking-tighter">Constructora <span className="font-light">Marvil</span></h3>
+                <h3 className="text-2xl font-black tracking-tighter">INMOBILIARIA <span className="text-[#0D9488] opacity-80">PRO</span></h3>
+                <h3 className="text-2xl font-black tracking-tighter">Torres <span className="italic font-serif">del Sol</span></h3>
+             </div>
           </div>
         </div>
       </header>
 
-      {/* Módulos Killer */}
-      <section id="modulos" className="py-32 px-6 relative z-10 bg-[#020617]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-black text-white">
-              7 Módulos de <span className="text-[#0D9488]">Próxima Generación</span>
+      {/* Main Benefits ROI (The "Vendedora" part) */}
+      <section id="roi" className="py-24 px-6 relative z-10 border-y border-white/5 bg-[#020617]/50">
+         <div className="max-w-7xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-8 text-center md:text-left shadow-2xl">
+               <div className="space-y-4 p-10 rounded-[2rem] bg-[#020617] border border-white/5 hover:border-[#0D9488]/30 transition-all duration-500 hover:-translate-y-2 group shadow-xl">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0D9488]/20 to-transparent text-[#0D9488] flex items-center justify-center mx-auto md:mx-0 group-hover:scale-110 transition-transform">
+                     <TrendingDown size={32} />
+                  </div>
+                  <h3 className="text-5xl font-black text-white">-45% Cartera</h3>
+                  <p className="text-white/60 font-medium leading-relaxed text-lg">
+                    Recuperación contundente de cartera vencida automatizando cobros vía canales digitales como PSE, TC y Wompi por WhatsApp.
+                  </p>
+               </div>
+               
+               <div className="space-y-4 p-10 rounded-[2rem] bg-[#020617] border border-white/5 hover:border-[#2563EB]/30 transition-all duration-500 hover:-translate-y-2 group shadow-xl">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#2563EB]/20 to-transparent text-[#2563EB] flex items-center justify-center mx-auto md:mx-0 group-hover:scale-110 transition-transform">
+                     <Clock size={32} />
+                  </div>
+                  <h3 className="text-5xl font-black text-white">40h Ahorradas</h3>
+                  <p className="text-white/60 font-medium leading-relaxed text-lg">
+                    Horas operativas ahorradas al mes eliminando conciliaciones manuales y reduciendo radicalmente los PQRs.
+                  </p>
+               </div>
+
+               <div className="space-y-4 p-10 rounded-[2rem] bg-[#020617] border border-white/5 hover:border-[#F59E0B]/30 transition-all duration-500 hover:-translate-y-2 group shadow-xl">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#F59E0B]/20 to-transparent text-[#F59E0B] flex items-center justify-center mx-auto md:mx-0 group-hover:scale-110 transition-transform">
+                     <Shield size={32} />
+                  </div>
+                  <h3 className="text-5xl font-black text-white">100% Legal</h3>
+                  <p className="text-white/60 font-medium leading-relaxed text-lg">
+                    Asambleas y quórums verificados electrónicamente con cálculos de coeficientes transparentes. Evita impugnaciones al 100%.
+                  </p>
+               </div>
+            </div>
+         </div>
+      </section>
+
+      {/* Core Features Showcase */}
+      <section id="modulos" className="py-40 px-6 relative z-10">
+         <div className="max-w-7xl mx-auto space-y-40">
+            
+            {/* Feature 1: Cuotas */}
+            <div className="flex flex-col md:flex-row items-center gap-16">
+               <div className="flex-1 space-y-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#3B82F6]/10 text-[#3B82F6] text-xs font-bold uppercase tracking-widest border border-[#3B82F6]/20">
+                     <BarChart3 size={16} /> Módulo Financiero
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-black text-white leading-[1.1]">
+                     Dile adiós al Excel y a conciliar recibos a mano.
+                  </h2>
+                  <p className="text-xl text-white/50 font-medium leading-relaxed">
+                     Nuestro módulo de facturación masiva genera las cuotas de administración automáticamente. Los residentes pagan online y el dashboard de AfiliadosOS se concilia en el acto.
+                  </p>
+                  <ul className="space-y-5 pt-4">
+                     {['Integración nativa con Wompi, Nequi y transferencias PSE', 'Alertas automáticas de mora e intereses al teléfono del residente', 'Sincronización bidireccional con Siigo, Loggro o tu software contable'].map((item, i) => (
+                        <li key={i} className="flex items-start gap-4 text-white/70 font-semibold text-lg">
+                           <CheckCircle2 className="text-[#0D9488] shrink-0 mt-0.5" size={24} /> {item}
+                        </li>
+                     ))}
+                  </ul>
+                  <button className="text-[#3B82F6] font-bold text-lg flex items-center gap-2 hover:gap-3 transition-all pt-4">
+                     Explorar módulo financiero <ArrowRight size={20} />
+                  </button>
+               </div>
+               
+               {/* Visual Presentation */}
+               <div className="flex-1 relative w-full aspect-square md:aspect-auto md:h-[600px] rounded-[3rem] bg-gradient-to-br from-[#3B82F6]/10 to-transparent border border-[#3B82F6]/20 flex items-center justify-center overflow-hidden group shadow-2xl">
+                  <div className="absolute inset-0 bg-[#020617]/40 backdrop-blur-md" />
+                  
+                  {/* Floating Elements (Mock UI) */}
+                  <div className="relative z-10 w-[85%] bg-[#020617] border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(59,130,246,0.15)] p-8 space-y-6 transform group-hover:-translate-y-2 transition-transform duration-500">
+                     <div className="flex justify-between items-center border-b border-white/10 pb-6">
+                        <div>
+                           <p className="text-xs text-white/50 font-bold uppercase tracking-[0.2em] mb-1">Recaudo Estimado Marzo</p>
+                           <p className="text-5xl font-black text-white">$42.5M</p>
+                        </div>
+                        <div className="px-4 py-2 bg-green-500/10 text-green-400 rounded-xl text-sm font-black border border-green-500/20">
+                          98% Efectividad
+                        </div>
+                     </div>
+                     <div className="space-y-4 pt-4">
+                        {[
+                          { apt: '402', name: 'Al Día', val: '+$350,000' },
+                          { apt: '801', name: 'Al Día', val: '+$350,000' },
+                          { apt: 'Local', name: 'Al Día', val: '+$850,000' }
+                        ].map((m, i) => (
+                           <div key={i} className="flex justify-between items-center p-4 bg-gradient-to-r from-white/5 to-transparent rounded-2xl border border-white/5 hover:border-white/10 transition-colors">
+                              <div className="flex items-center gap-4">
+                                 <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center font-bold text-white/50 border border-white/5">
+                                   {m.apt}
+                                 </div>
+                                 <div>
+                                    <p className="text-sm font-black text-white">Pago Conciliado</p>
+                                    <p className="text-xs text-green-400 font-bold tracking-widest uppercase mt-0.5">{m.name} Wompi</p>
+                                 </div>
+                              </div>
+                              <p className="text-lg font-black text-white">{m.val}</p>
+                           </div>
+                        ))}
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            {/* Feature 2: Asambleas */}
+            <div className="flex flex-col md:flex-row-reverse items-center gap-16">
+               <div className="flex-1 space-y-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#ef4444]/10 text-[#ef4444] text-xs font-bold uppercase tracking-widest border border-[#ef4444]/20">
+                     <Users size={16} /> Sala de Asambleas Live
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-black text-white leading-[1.1]">
+                     Control total de reuniones de consorcio.
+                  </h2>
+                  <p className="text-xl text-white/50 font-medium leading-relaxed">
+                     Convierte asambleas presenciales o virtuales en experiencias dinámicas, ordenadas y legalmente auditables. Nuestra sala en vivo permite votaciones inmediatas sin contar manos alzadas.
+                  </p>
+                  <ul className="space-y-5 pt-4">
+                     {['Cálculo de Quórum en tiempo real ponderado por coeficiente de copropiedad', 'Votaciones secretas o públicas con resultados infalsificables (Blockchain Ready)', 'Generación automática del acta al cerrar la sesión'].map((item, i) => (
+                        <li key={i} className="flex items-start gap-4 text-white/70 font-semibold text-lg">
+                           <CheckCircle2 className="text-[#0D9488] shrink-0 mt-0.5" size={24} /> {item}
+                        </li>
+                     ))}
+                  </ul>
+                  <button className="text-[#ef4444] font-bold text-lg flex items-center gap-2 hover:gap-3 transition-all pt-4">
+                     Explorar módulo de asambleas <ArrowRight size={20} />
+                  </button>
+               </div>
+               
+               {/* Visual Presentation */}
+               <div className="flex-1 relative w-full aspect-square md:aspect-auto md:h-[600px] rounded-[3rem] bg-gradient-to-br from-[#ef4444]/10 to-transparent border border-[#ef4444]/20 flex items-center justify-center overflow-hidden group shadow-2xl">
+                  <div className="absolute inset-0 bg-[#020617]/40 backdrop-blur-md" />
+                  
+                   {/* Mock UI snippet */}
+                   <div className="relative z-10 w-[75%] bg-[#020617] border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(239,68,68,0.15)] p-10 space-y-8 text-center transform group-hover:scale-105 transition-transform duration-500">
+                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-500/10 mb-2 border border-red-500/20">
+                        <Users size={32} className="text-red-500" />
+                     </div>
+                     <div className="space-y-2">
+                        <p className="text-xs text-[#ef4444] font-black uppercase tracking-[0.3em] animate-pulse">Quórum Confirmado</p>
+                        <p className="text-7xl font-black text-white tracking-tighter">65.4%</p>
+                     </div>
+                     
+                     <div className="w-full bg-white/5 rounded-full h-4 overflow-hidden shadow-inner relative">
+                        <div className="bg-gradient-to-r from-[#01a877] to-[#0D9488] w-[65%] h-full relative transition-all duration-1000">
+                           <div className="absolute top-0 right-0 w-8 h-full bg-white/30 blur-sm animate-pulse" />
+                        </div>
+                        <div className="absolute left-[51%] top-0 bottom-0 w-0.5 bg-red-500 z-10" />
+                     </div>
+                     
+                     <button className="w-full py-5 bg-white text-[#020617] hover:bg-gray-200 transition-colors font-black uppercase tracking-widest text-sm rounded-2xl shadow-xl">
+                        Lanzar Votación General
+                     </button>
+                  </div>
+               </div>
+            </div>
+
+            {/* Feature 3: Comunicaciones */}
+            <div className="flex flex-col md:flex-row items-center gap-16">
+               <div className="flex-1 space-y-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0D9488]/10 text-[#0D9488] text-xs font-bold uppercase tracking-widest border border-[#0D9488]/20">
+                     <Smartphone size={16} /> Omnicanalidad
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-black text-white leading-[1.1]">
+                     Llega al celular del residente en segundos.
+                  </h2>
+                  <p className="text-xl text-white/50 font-medium leading-relaxed">
+                     El cartel de corcho en la portería pasó a la historia. Comunica cortes de agua, arreglos de ascensor o encuestas directamente a la app, WhatsApp y correo personal.
+                  </p>
+                  <ul className="space-y-5 pt-4">
+                     {['Tablero de notificaciones vía API oficial de Meta (WhatsApp)', 'Alertas Push en los celulares de los residentes (iOS/Android)', 'Emails masivos a través de SendGrid con hermosas plantillas'].map((item, i) => (
+                        <li key={i} className="flex items-start gap-4 text-white/70 font-semibold text-lg">
+                           <CheckCircle2 className="text-[#0D9488] shrink-0 mt-0.5" size={24} /> {item}
+                        </li>
+                     ))}
+                  </ul>
+                  <button className="text-[#0D9488] font-bold text-lg flex items-center gap-2 hover:gap-3 transition-all pt-4">
+                     Explorar módulo de comunicaciones <ArrowRight size={20} />
+                  </button>
+               </div>
+               
+               {/* Visual Presentation */}
+               <div className="flex-1 relative w-full aspect-square md:aspect-auto md:h-[600px] rounded-[3rem] bg-gradient-to-br from-[#0D9488]/10 to-transparent border border-[#0D9488]/20 flex items-center justify-center overflow-hidden group shadow-2xl">
+                  <div className="absolute inset-0 bg-[#020617]/40 backdrop-blur-md" />
+                  
+                  {/* Floating Elements (Mock UI) */}
+                  <div className="relative z-10 w-[70%] bg-[#020617] border border-white/10 rounded-3xl shadow-[0_0_50px_rgba(13,148,136,0.15)] p-2">
+                     <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                        <div className="flex items-center gap-3 mb-6">
+                           <div className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center animate-bounce-slow">
+                              <Smartphone size={20} className="text-white" />
+                           </div>
+                           <h4 className="font-bold text-white uppercase tracking-widest text-sm">Alerta de Edificio</h4>
+                        </div>
+                        <div className="bg-[#111B21] rounded-2xl rounded-tl-none p-4 w-[90%] border border-white/5 shadow-xl relative overflow-hidden">
+                           <div className="absolute right-0 top-0 w-16 h-16 bg-[#25D366]/20 blur-xl" />
+                           <p className="text-white/90 text-sm leading-relaxed relative z-10">
+                              ⚠️ <strong className="text-white">Aviso Importante:</strong> El día de mañana a las 10:00 AM se realizará el mantenimiento de la red principal de acueducto.
+                              <br/><br/>
+                              Agradecemos su comprensión.
+                           </p>
+                           <p className="text-right text-[10px] text-white/40 mt-2 font-bold">14:26 ✓✓</p>
+                        </div>
+                        
+                        <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center text-xs">
+                           <span className="text-white/40 font-bold uppercase tracking-widest">Enviado por API</span>
+                           <span className="text-[#0D9488] font-black uppercase tracking-widest">95% Tasa de Apertura</span>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+         </div>
+      </section>
+
+      {/* Testimonials */}
+      <section id="testimonios" className="py-24 px-6 bg-gradient-to-b from-[#020617] via-[#020617] to-white/[0.02] relative z-10 border-t border-white/5 overflow-hidden">
+         <div className="absolute top-0 right-[20%] w-[500px] h-[500px] bg-[#3B82F6]/5 rounded-full blur-[100px] pointer-events-none" />
+         
+         <div className="max-w-7xl mx-auto space-y-16 relative z-10">
+            <div className="text-center space-y-4">
+               <h2 className="text-4xl md:text-5xl font-black text-white">
+                  Respaldado por Administradores de Élite
+               </h2>
+               <p className="text-xl text-white/50 font-medium">No tomes nuestra palabra. Mira lo que han logrado.</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+               <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-6 hover:bg-white/10 transition-colors backdrop-blur-sm">
+                  <div className="flex gap-1 text-[#F59E0B]">
+                     {[1,2,3,4,5].map(i => <Zap key={i} size={18} fill="currentColor" />)}
+                  </div>
+                  <p className="text-white/70 text-lg italic leading-relaxed font-medium">
+                     "La recuperación de cartera ha sido monumental. Los dueños ahora pagan la administración desde su celular en segundos con Nequi. El sistema se paga solo."
+                  </p>
+                  <div className="pt-4 flex items-center gap-4">
+                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0D9488] to-[#3B82F6] flex items-center justify-center font-black text-white">CJ</div>
+                     <div>
+                        <p className="font-bold text-white text-sm">Carlos Jaramillo</p>
+                        <p className="text-xs text-[#0D9488] font-bold uppercase tracking-widest mt-1">Torres del Parque</p>
+                     </div>
+                  </div>
+               </div>
+               
+               <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-6 hover:bg-white/10 transition-colors backdrop-blur-sm">
+                  <div className="flex gap-1 text-[#F59E0B]">
+                     {[1,2,3,4,5].map(i => <Zap key={i} size={18} fill="currentColor" />)}
+                  </div>
+                  <p className="text-white/70 text-lg italic leading-relaxed font-medium">
+                     "La asamblea virtual de este año fue perfecta. Todos votaron desde la tablet en el dashboard, se generó el acta y listo. Cero estrés, 100% elegancia."
+                  </p>
+                  <div className="pt-4 flex items-center gap-4">
+                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#ef4444] to-[#f59e0b] flex items-center justify-center font-black text-white">MP</div>
+                     <div>
+                        <p className="font-bold text-white text-sm">Mariana Pérez</p>
+                        <p className="text-xs text-[#0D9488] font-bold uppercase tracking-widest mt-1">Club Los Lagartos</p>
+                     </div>
+                  </div>
+               </div>
+
+               <div className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-6 hover:bg-white/10 transition-colors backdrop-blur-sm md:col-span-2 lg:col-span-1">
+                  <div className="flex gap-1 text-[#F59E0B]">
+                     {[1,2,3,4,5].map(i => <Zap key={i} size={18} fill="currentColor" />)}
+                  </div>
+                  <p className="text-white/70 text-lg italic leading-relaxed font-medium">
+                     "Ahorro al menos 40 horas mensuales como contadora. Las conciliaciones llegan automatizadas a Siigo y enviar notificaciones vía WhatsApp con un click cambia la vida."
+                  </p>
+                  <div className="pt-4 flex items-center gap-4">
+                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#8b5cf6] to-[#ec4899] flex items-center justify-center font-black text-white">RS</div>
+                     <div>
+                        <p className="font-bold text-white text-sm">Roberto Sánchez</p>
+                        <p className="text-xs text-[#0D9488] font-bold uppercase tracking-widest mt-1">Inmobiliaria Sur</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+
+      {/* Extreme CTA Section */}
+      <section className="py-32 px-6 relative z-10 overflow-hidden bg-white/[0.02] border-t border-white/5">
+         <div className="absolute inset-0 bg-[#0D9488]/10 blur-[150px] rounded-full pointer-events-none" />
+         <div className="max-w-5xl mx-auto text-center relative z-20 space-y-10 p-12 md:p-20 rounded-[3rem] border border-[#0D9488]/30 bg-[#020617]/90 backdrop-blur-3xl shadow-[0_0_100px_rgba(0,229,160,0.2)]">
+            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white text-[#020617] text-sm font-black tracking-widest uppercase">
+               No hay inversión inicial • Cancela cuando quieras
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-[1.05]">
+               Lleva tu Administración <br/> al Siguiente Nivel.
             </h2>
-            <p className="text-white/50 text-xl font-medium max-w-2xl mx-auto">
-              Diseñado para la vida en comunidad y el control administrativo absoluto. 
-              Convierte tu organización en un referente de tecnología.
+            <p className="text-xl md:text-2xl text-white/60 font-medium max-w-3xl mx-auto">
+               Agenda una demo de 15 minutos. Te mostraremos el dashboard y cotizaremos un plan exacto según la cantidad de unidades de tu ecosistema.
             </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Module 1 */}
-            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#EAB308]/5 hover:border-[#EAB308]/30 transition-all duration-300">
-              <div className="w-14 h-14 bg-[#EAB308]/10 rounded-2xl flex items-center justify-center text-[#EAB308] mb-6 group-hover:scale-110 transition-transform">
-                <Bot size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Asambleas y Votaciones</h3>
-              <p className="text-white/50 leading-relaxed text-sm">
-                Quórums automáticos y actas exportables con 1 clic. Votaciones en tiempo real con ponderación por coeficiente (copropiedad).
-              </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
+               <Link 
+                  href="/dashboard" 
+                  className="px-12 py-6 rounded-2xl bg-[#0D9488] text-[#020617] font-black text-lg uppercase tracking-widest transition-all hover:scale-105 shadow-[0_0_40px_rgba(0,229,160,0.5)] flex items-center justify-center gap-3"
+               >
+                  Probar Demo Interactive <ArrowRight size={24} />
+               </Link>
+               <button className="px-12 py-6 rounded-2xl bg-transparent hover:bg-white/5 text-white font-bold text-lg uppercase tracking-widest transition-all border border-white/20">
+                  Contactar a Ventas
+               </button>
             </div>
-
-            {/* Module 2 */}
-            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#3B82F6]/5 hover:border-[#3B82F6]/30 transition-all duration-300">
-              <div className="w-14 h-14 bg-[#3B82F6]/10 rounded-2xl flex items-center justify-center text-[#3B82F6] mb-6 group-hover:scale-110 transition-transform">
-                <Building2 size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Cobranza y Facturación</h3>
-              <p className="text-white/50 leading-relaxed text-sm">
-                Generación automática de cuotas de administración. Integración nativa con Wompi para pago por PSE, Nequi y tarjetas.
-              </p>
-            </div>
-
-            {/* Module 3 */}
-            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#0D9488]/5 hover:border-[#0D9488]/30 transition-all duration-300">
-              <div className="w-14 h-14 bg-[#0D9488]/10 rounded-2xl flex items-center justify-center text-[#0D9488] mb-6 group-hover:scale-110 transition-transform">
-                <LinkIcon size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Carné Digital (QR)</h3>
-              <p className="text-white/50 leading-relaxed text-sm">
-                Carné virtual en la app del afiliado para control de acceso en portería. Códigos QR dinámicos y actualizados en tiempo real.
-              </p>
-            </div>
-
-            {/* Module 4 */}
-            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#2563EB]/5 hover:border-[#2563EB]/30 transition-all duration-300">
-              <div className="w-14 h-14 bg-[#2563EB]/10 rounded-2xl flex items-center justify-center text-[#2563EB] mb-6 group-hover:scale-110 transition-transform">
-                <Gamepad2 size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Reservas de Espacios</h3>
-              <p className="text-white/50 leading-relaxed text-sm">
-                Calendario interactivo para zonas comunes (BBQ, Salón Comunal, Cancha). Self-service total para los residentes o socios.
-              </p>
-            </div>
-
-            {/* Module 5 */}
-            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#0ea5e9]/5 hover:border-[#0ea5e9]/30 transition-all duration-300">
-              <div className="w-14 h-14 bg-[#0ea5e9]/10 rounded-2xl flex items-center justify-center text-[#0ea5e9] mb-6 group-hover:scale-110 transition-transform">
-                <Shield size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Tablero Comunitario</h3>
-              <p className="text-white/50 leading-relaxed text-sm">
-                Segmentación de comunicados vitales. Reemplaza el corcho de la recepción con notificaciones Push y SMS directos al celular.
-              </p>
-            </div>
-
-            {/* Module 6 */}
-            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#EC4899]/5 hover:border-[#EC4899]/30 transition-all duration-300">
-              <div className="w-14 h-14 bg-[#EC4899]/10 rounded-2xl flex items-center justify-center text-[#EC4899] mb-6 group-hover:scale-110 transition-transform">
-                <Wallet size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Seguros Embebidos</h3>
-              <p className="text-white/50 leading-relaxed text-sm">
-                Integración insurtech. Permite a los afiliados contratar seguros a 1 clic, debitados de su cuota, creando una enorme línea de revenue.
-              </p>
-            </div>
-
-          </div>
-        </div>
+         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-white/5 bg-[#020617]">
-        <div className="max-w-7xl mx-auto px-6 text-center text-white/40 text-sm font-medium">
-          <p>© 2026 AfiliadosOS. Tecnología de Proyector 2026.</p>
+      <footer className="py-16 border-t border-white/5 bg-[#020617]">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-white/50 text-sm font-medium">
+          <div className="col-span-1 md:col-span-2 space-y-4">
+            <div className="flex items-center gap-3">
+               <div className="w-8 h-8 bg-gradient-to-br from-[#0D9488] to-[#01a877] rounded flex items-center justify-center">
+                 <Building2 className="text-[#020617]" size={16} strokeWidth={3} />
+               </div>
+               <span className="text-lg font-bold tracking-tight text-white">
+                 Afiliados<span className="text-[#0D9488]">OS</span>
+               </span>
+            </div>
+            <p className="max-w-sm leading-relaxed">
+               El ecosistema digital más potente de Latinoamérica para la administración de copropiedades, clubes y asociaciones.
+            </p>
+          </div>
+          <div className="space-y-4">
+             <h4 className="text-white font-bold uppercase tracking-widest mb-6">Módulos</h4>
+             <ul className="space-y-3">
+                <li><a href="#" className="hover:text-white transition-colors">Sistema Contable</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Asambleas Online</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Control de Acceso QR</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Cobranza y Wompi</a></li>
+             </ul>
+          </div>
+          <div className="space-y-4">
+             <h4 className="text-white font-bold uppercase tracking-widest mb-6">Empresa</h4>
+             <ul className="space-y-3">
+                <li><a href="#" className="hover:text-white transition-colors">Precios y Planes</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Casos de Éxito</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Seguridad de Datos</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contacto Ventas</a></li>
+             </ul>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-white/30 text-xs font-bold uppercase tracking-widest">
+           <p>© 2026 Proyector Software de Colombia.</p>
+           <div className="flex gap-6">
+             <span>Todos los derechos reservados.</span>
+           </div>
         </div>
       </footer>
 
@@ -227,11 +466,12 @@ export default function LandingPage() {
           animation: float 4s ease-in-out infinite;
         }
 
-        .rotate-x-12 {
-          transform: perspective(1000px) rotateX(12deg);
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
         }
-        .group:hover .group-hover\:rotate-x-0 {
-          transform: perspective(1000px) rotateX(0deg);
+        .animate-bounce-slow {
+          animation: bounce-slow 4s ease-in-out infinite;
         }
       `}</style>
     </div>
