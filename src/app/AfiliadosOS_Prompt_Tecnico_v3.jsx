@@ -325,47 +325,47 @@ CREATE TABLE audit_logs (
     ]
   },
   backend: {
-    title: "Backend — NestJS Microservicios",
-    subtitle: "Estructura, patrones y reglas de implementación",
+    title: "Backend — Monolito NestJS",
+    subtitle: "Estructura, patrones y reglas de implementación (Modular Monolith)",
     blocks: [
       {
-        label: "ESTRUCTURA BASE DE CADA MICROSERVICIO",
+        label: "ESTRUCTURA BASE DEL MONOLITO (NESTJS)",
         color: "#00E5A0",
-        content: `STACK POR SERVICIO:
+        content: `STACK BACKEND:
   Runtime:    Node.js 20 LTS + TypeScript 5.4
-  Framework:  NestJS 10 (arquitectura modular DDD)
-  ORM:        Prisma 5 (migraciones + type-safe queries)
+  Framework:  NestJS 10 (Arquitectura Modular)
+  ORM:        Prisma 5 (PostgreSQL 16)
   Validación: class-validator + class-transformer
   Tests:      Jest + Supertest (cobertura mínima 80%)
-  Docs:       @nestjs/swagger (OpenAPI 3.1 auto-generado)
+  Docs:       @nestjs/swagger (OpenAPI 3.1)
+  Colas:      BullMQ (respaldado por Redis 7)
+  WebSockets: @nestjs/websockets + socket.io (para asambleas en vivo)
 
-ESTRUCTURA INTERNA DE CADA SERVICIO:
+ESTRUCTURA INTERNA (apps/api):
 src/
 ├── main.ts                    # Bootstrap + Swagger
-├── app.module.ts              # Módulo raíz
+├── app.module.ts              # Importa todos los módulos
 ├── common/
-│   ├── decorators/            # @CurrentTenant, @Public, etc.
+│   ├── decorators/            # @CurrentTenant, @Public
 │   ├── filters/               # GlobalExceptionFilter
-│   ├── guards/                # AuthGuard, RolesGuard, TenantGuard
-│   ├── interceptors/          # LoggingInterceptor, TransformInterceptor
-│   ├── pipes/                 # ValidationPipe global
+│   ├── guards/                # AuthGuard, RolesGuard
 │   └── middleware/            # TenantContextMiddleware
-├── config/
-│   ├── database.config.ts     # Prisma config con tenant_id en RLS
-│   ├── auth.config.ts         # JWT config
-│   └── env.validation.ts      # Joi schema validación env vars
+├── lib/
+│   ├── prisma/                # PrismaService
+│   ├── email/                 # SendGrid wrapper
+│   ├── sms/                   # Twilio wrapper
+│   └── payments/              # Wompi SDK wrapper
 ├── modules/
-│   ├── [feature]/
-│   │   ├── dto/               # CreateXDto, UpdateXDto, ResponseXDto
-│   │   ├── entities/          # Prisma models + domain entities
-│   │   ├── [feature].controller.ts
-│   │   ├── [feature].service.ts
-│   │   ├── [feature].repository.ts
-│   │   └── [feature].module.ts
+│   ├── auth/                  # JWT auth y 2FA
+│   ├── tenant/                # Gestión tenants
+│   ├── afiliados/             # Afiliados y docs
+│   ├── financiero/            # Cuotas y cobros
+│   ├── asambleas/             # Quórum y votaciones live
+│   ├── eventos/               # Eventos y reservas
+│   └── comunicaciones/        # Push, email, sms async
 └── prisma/
-    ├── schema.prisma
-    └── migrations/`
-      },
+    └── schema.prisma          # Schema único de DB`
+      },,
       {
         label: "REGLAS DE IMPLEMENTACIÓN BACKEND",
         color: "#F59E0B",
