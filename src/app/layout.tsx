@@ -1,18 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Outfit, Sora } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
+  weight: ["700", "900"],
+});
+
+const sora = Sora({
+  variable: "--font-body",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["300", "400", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "GestorAfiliados - Administración de Edificios",
-  description: "Plataforma SaaS para gestión de cartera y afiliados en edificios, clubes y fondos de empleados. Mobile-first, ágil y simple.",
-  keywords: ["administración", "edificios", "PH", "cobranza", "afiliados", "Colombia"],
-  authors: [{ name: "GestorAfiliados" }],
+  title: "AfiliadosOS - Super App para Sector Solidario",
+  description: "Plataforma SaaS nivel Monstruo para Fondos de Empleados, Cooperativas, Sindicatos y Asociaciones. IA transaccional, Banca Abierta y Gamificación.",
+  keywords: ["fondos de empleados", "cooperativas", "asociaciones", "fintech", "solidario", "Colombia", "SaaS", "Gestión"],
+  authors: [{ name: "AfiliadosOS" }],
 };
 
 export const viewport: Viewport = {
@@ -20,7 +28,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#3b82f6",
+  themeColor: "#050505",
 };
 
 export default function RootLayout({
@@ -30,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${outfit.variable} ${sora.variable} antialiased`}>
         {children}
       </body>
     </html>

@@ -1,225 +1,239 @@
-/**
- * GestorAfiliados - Dashboard del Administrador
- * Vista principal mobile-first para gestión de cobranza
- */
+"use client";
 
-import { Building2, Users, AlertTriangle, Clock, CheckCircle, Bell, ChevronRight } from 'lucide-react';
+import { 
+  Building2, 
+  ArrowRight,
+  Shield,
+  Zap,
+  Layers,
+  Bot,
+  Link as LinkIcon,
+  Gamepad2,
+  Wallet
+} from 'lucide-react';
 import Link from 'next/link';
-import { getOrganizations, getOrganizationsStats } from '@/app/actions/organizations';
-import { formatCOP } from '@/lib/utils';
+import Image from 'next/image';
 
-export const dynamic = 'force-dynamic';
-
-export default async function DashboardPage() {
-  // Obtener datos del servidor
-  const [organizations, stats] = await Promise.all([
-    getOrganizations(),
-    getOrganizationsStats(),
-  ]);
-
-  // Calcular resúmenes
-  const totalOverdue = organizations.reduce((sum, org) => sum + org.overdueCount, 0);
-  const totalPending = organizations.reduce((sum, org) => sum + org.pendingCount, 0);
-  const orgsWithDebt = organizations.filter(org => org.totalDebt > 0);
-
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="app-header">
-        <div className="container flex items-center justify-between py-0">
-          <div className="flex items-center gap-2">
-            <Building2 className="text-primary" size={24} />
-            <div>
-              <h1 className="text-lg font-bold leading-none">GestorAfiliados</h1>
-              <p className="text-xs text-gray-500">Panel SaaS</p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#060B14] text-[#E8EDF5] selection:bg-[#00E5A0]/30 font-sans antialiased overflow-x-hidden">
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[#00E5A0]/10 rounded-full blur-[150px] animate-pulse-slow" />
+        <div className="absolute bottom-[-10%] left-[-20%] w-[600px] h-[600px] bg-[#A855F7]/10 rounded-full blur-[150px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[40%] left-[30%] w-[400px] h-[400px] bg-[#FF6B35]/5 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '4s' }} />
+        
+        {/* Subtle noise pattern */}
+        <div className="absolute inset-0 opacity-[0.02] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-50 mix-blend-overlay" />
+      </div>
+
+      {/* Modern Navigation */}
+      <nav className="sticky top-0 z-50 backdrop-blur-2xl border-b border-white/5 bg-[#060B14]/60">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/alertas" className="relative">
-              <Bell size={20} className="text-gray-500" />
-              {totalOverdue > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  {totalOverdue > 9 ? '9+' : totalOverdue}
-                </span>
-              )}
+            <div className="w-10 h-10 bg-gradient-to-br from-[#00E5A0] to-[#01a877] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(0,229,160,0.3)]">
+              <Layers className="text-[#060B14]" size={20} strokeWidth={2.5} />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-white">
+              Afiliados<span className="text-[#00E5A0]">OS</span>
+            </span>
+          </div>
+          
+          <div className="hidden md:flex items-center gap-8 text-[13px] font-semibold text-white/60">
+            <a href="#vision" className="hover:text-white transition-colors">Visión</a>
+            <a href="#modulos" className="hover:text-white transition-colors">Super Módulos</a>
+            <a href="#tecnologia" className="hover:text-white transition-colors">Tecnología</a>
+          </div>
+
+          <Link 
+            href="/dashboard" 
+            className="px-6 py-2.5 rounded-full bg-white/5 text-white text-sm font-semibold border border-white/10 hover:bg-[#00E5A0] hover:text-[#060B14] hover:border-transparent transition-all shadow-lg backdrop-blur-md"
+          >
+            Abrir App
+          </Link>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <header className="relative pt-24 pb-20 px-6 z-10 w-full flex flex-col items-center justify-center text-center">
+        <div className="max-w-5xl mx-auto space-y-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#00E5A0]/30 bg-[#00E5A0]/10 text-[#00E5A0] text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(0,229,160,0.15)] animate-float">
+            <Zap size={14} fill="currentColor" /> La Super App para el Sector Solidario
+          </div>
+          
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-[0.9] text-white">
+            GESTIÓN DE AFILIADOS <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00E5A0] via-[#A855F7] to-[#FF6B35]">
+              NIVEL MONSTRUO
+            </span>
+          </h1>
+          
+          <p className="max-w-2xl mx-auto text-xl md:text-2xl text-white/50 font-medium leading-relaxed">
+            Reemplaza tu software legacy, Excel y WhatsApp por un ecosistema unificado. 
+            IA transaccional, banca abierta y automatización extrema.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-5 justify-center pt-8">
+            <Link 
+              href="/dashboard" 
+              className="group relative px-10 py-5 rounded-2xl bg-[#00E5A0] text-[#060B14] font-bold text-sm uppercase tracking-wide overflow-hidden transition-all hover:scale-105 shadow-[0_0_40px_rgba(0,229,160,0.3)]"
+            >
+              <div className="absolute inset-0 w-1/4 h-full bg-white/30 -skew-x-12 -translate-x-full group-hover:translate-x-[500%] transition-transform duration-700 ease-out" />
+              Ingresar al Demo Interactivo
             </Link>
+          </div>
+        </div>
+
+        {/* Dashboard Preview mockup */}
+        <div className="mt-28 relative w-full max-w-6xl mx-auto perspective-1000 group">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#00E5A0]/20 to-transparent blur-3xl opacity-50 transition-opacity group-hover:opacity-70" />
+          
+          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#060B14]/80 backdrop-blur-xl shadow-2xl transform rotate-x-12 scale-100 transition-transform duration-700 ease-out group-hover:rotate-x-0 group-hover:scale-[1.02]">
+            {/* Fake Mac Header */}
+            <div className="h-8 bg-white/5 border-b border-white/10 flex items-center px-4 gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500/80" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+              <div className="w-3 h-3 rounded-full bg-green-500/80" />
+            </div>
+            
+            <div className="p-8 grid grid-cols-12 gap-6 opacity-80 group-hover:opacity-100 transition-opacity">
+              {/* Fake Sidebar */}
+              <div className="col-span-3 space-y-4">
+                <div className="h-8 w-32 bg-white/10 rounded" />
+                <div className="space-y-2 mt-8">
+                  {[1,2,3,4,5].map(i => <div key={i} className="h-10 w-full bg-white/5 rounded-lg" />)}
+                </div>
+              </div>
+              {/* Fake Content */}
+              <div className="col-span-9 space-y-6">
+                <div className="flex gap-4">
+                  <div className="flex-1 h-32 bg-gradient-to-br from-[#00E5A0]/20 to-transparent border border-[#00E5A0]/20 rounded-2xl" />
+                  <div className="flex-1 h-32 bg-gradient-to-br from-[#A855F7]/20 to-transparent border border-[#A855F7]/20 rounded-2xl" />
+                  <div className="flex-1 h-32 bg-gradient-to-br from-[#FF6B35]/20 to-transparent border border-[#FF6B35]/20 rounded-2xl" />
+                </div>
+                <div className="h-64 w-full bg-white/5 border border-white/10 rounded-2xl" />
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container py-4">
-        {/* Stats Grid General */}
-        <section className="card mb-4" aria-label="Resumen general del SaaS">
-          <div className="p-4">
-            <h2 className="text-sm font-medium text-gray-500 mb-3 uppercase tracking-wide">
-              Resumen General
+      {/* Módulos Killer */}
+      <section id="modulos" className="py-32 px-6 relative z-10 bg-[#060B14]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20 space-y-4">
+            <h2 className="text-4xl md:text-5xl font-black text-white">
+              7 Módulos de <span className="text-[#00E5A0]">Próxima Generación</span>
             </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {/* Organizaciones */}
-              <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                <div className="flex items-center justify-center gap-2 text-blue-600 mb-1">
-                  <Building2 size={24} />
-                  <span className="text-3xl font-bold">{stats.totalOrganizations}</span>
-                </div>
-                <p className="text-xs text-gray-500">Organizaciones</p>
-              </div>
-
-              {/* Afiliados */}
-              <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                <div className="flex items-center justify-center gap-2 text-green-600 mb-1">
-                  <Users size={24} />
-                  <span className="text-3xl font-bold">{stats.totalAffiliates}</span>
-                </div>
-                <p className="text-xs text-gray-500">Afiliados</p>
-              </div>
-            </div>
-
-            {/* Cartera */}
-            <div className="mt-4 p-4 bg-gradient-to-r from-red-50 to-amber-50 dark:from-red-900/20 dark:to-amber-900/20 rounded-xl">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Cartera Total</p>
-                  <p className="text-2xl font-bold text-red-600">
-                    {formatCOP(stats.totalDebt)}
-                  </p>
-                </div>
-                <div className="flex gap-4 text-center">
-                  <div>
-                    <div className="flex items-center justify-center gap-1 text-red-500">
-                      <AlertTriangle size={16} />
-                      <span className="font-bold text-lg">{totalOverdue}</span>
-                    </div>
-                    <p className="text-xs text-gray-500">Vencidas</p>
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-center gap-1 text-amber-500">
-                      <Clock size={16} />
-                      <span className="font-bold text-lg">{totalPending}</span>
-                    </div>
-                    <p className="text-xs text-gray-500">Pendientes</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Acceso Rápido a Organizaciones */}
-        <section className="mb-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold">Organizaciones</h2>
-            <Link
-              href="/organizaciones"
-              className="text-sm text-primary hover:underline flex items-center gap-1"
-            >
-              Ver todas <ChevronRight size={14} />
-            </Link>
+            <p className="text-white/50 text-xl font-medium max-w-2xl mx-auto">
+              Funciones que tu competencia ni siquiera entiende todavía. 
+              Convierte tu organización en una fintech avanzada.
+            </p>
           </div>
 
-          <div className="cards-list">
-            {organizations.slice(0, 3).map((org) => {
-              const typeEmoji = {
-                EDIFICIO: '🏢',
-                CLUB: '⛳',
-                FONDO: '💼',
-                OTRO: '🏛️',
-              }[org.type];
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Module 1 */}
+            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#EAB308]/5 hover:border-[#EAB308]/30 transition-all duration-300">
+              <div className="w-14 h-14 bg-[#EAB308]/10 rounded-2xl flex items-center justify-center text-[#EAB308] mb-6 group-hover:scale-110 transition-transform">
+                <Bot size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">IA Transaccional</h3>
+              <p className="text-white/50 leading-relaxed text-sm">
+                Agente inteligente en WhatsApp que responde saldos, aprueba micro-créditos y realiza el onboarding leyendo notas de voz.
+              </p>
+            </div>
 
-              const hasUrgentDebt = org.overdueCount > 0;
+            {/* Module 2 */}
+            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#3B82F6]/5 hover:border-[#3B82F6]/30 transition-all duration-300">
+              <div className="w-14 h-14 bg-[#3B82F6]/10 rounded-2xl flex items-center justify-center text-[#3B82F6] mb-6 group-hover:scale-110 transition-transform">
+                <Building2 size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Portal B2B Patrones</h3>
+              <p className="text-white/50 leading-relaxed text-sm">
+                Las empresas aliadas suben sus plantillas de Excel, y el sistema concilia libranzas automáticamente cruzando con entidades financieras.
+              </p>
+            </div>
 
-              return (
-                <Link
-                  key={org.id}
-                  href={`/organizaciones/${org.id}`}
-                  className={`card p-4 flex items-center justify-between hover:border-blue-300 transition-colors ${hasUrgentDebt ? 'border-l-4 border-l-red-500' : ''
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{typeEmoji}</span>
-                    <div>
-                      <h3 className="font-semibold text-sm">{org.name}</h3>
-                      <p className="text-xs text-gray-500">
-                        {org.affiliatesCount} afiliados
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    {org.totalDebt > 0 ? (
-                      <>
-                        <p className="font-bold text-red-600 text-sm">
-                          {formatCOP(org.totalDebt)}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {org.overdueCount} vencidas
-                        </p>
-                      </>
-                    ) : (
-                      <div className="flex items-center gap-1 text-green-600">
-                        <CheckCircle size={14} />
-                        <span className="text-xs">Al día</span>
-                      </div>
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
+            {/* Module 3 */}
+            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#00E5A0]/5 hover:border-[#00E5A0]/30 transition-all duration-300">
+              <div className="w-14 h-14 bg-[#00E5A0]/10 rounded-2xl flex items-center justify-center text-[#00E5A0] mb-6 group-hover:scale-110 transition-transform">
+                <LinkIcon size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Open Finance (1-Clic)</h3>
+              <p className="text-white/50 leading-relaxed text-sm">
+                Cero papeleo. Conexión nativa a bancos para evaluar el riesgo en 10 segundos y desembolsar con algoritmos de IA predictiva.
+              </p>
+            </div>
+
+            {/* Module 4 */}
+            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#A855F7]/5 hover:border-[#A855F7]/30 transition-all duration-300">
+              <div className="w-14 h-14 bg-[#A855F7]/10 rounded-2xl flex items-center justify-center text-[#A855F7] mb-6 group-hover:scale-110 transition-transform">
+                <Gamepad2 size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Motor de Gamificación</h3>
+              <p className="text-white/50 leading-relaxed text-sm">
+                Reemplaza la apatía por engagement puro. Metas, niveles (Bronce, Oro) y tokens que desbloquean mejores tasas y rendimientos.
+              </p>
+            </div>
+
+            {/* Module 5 */}
+            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#FF6B35]/5 hover:border-[#FF6B35]/30 transition-all duration-300">
+              <div className="w-14 h-14 bg-[#FF6B35]/10 rounded-2xl flex items-center justify-center text-[#FF6B35] mb-6 group-hover:scale-110 transition-transform">
+                <Shield size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Votación Blockchain</h3>
+              <p className="text-white/50 leading-relaxed text-sm">
+                Quórums automáticos y actas inmutables. Las decisiones de la asamblea blindadas criptográficamente para auditorías perfectas.
+              </p>
+            </div>
+
+            {/* Module 6 */}
+            <div className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-[#EC4899]/5 hover:border-[#EC4899]/30 transition-all duration-300">
+              <div className="w-14 h-14 bg-[#EC4899]/10 rounded-2xl flex items-center justify-center text-[#EC4899] mb-6 group-hover:scale-110 transition-transform">
+                <Wallet size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">Seguros Embebidos</h3>
+              <p className="text-white/50 leading-relaxed text-sm">
+                Integración insurtech. Permite a los afiliados contratar seguros a 1 clic, debitados de su cuota, creando una enorme línea de revenue.
+              </p>
+            </div>
+
           </div>
-        </section>
-
-        {/* Organizaciones con Deuda Urgente */}
-        {orgsWithDebt.length > 0 && (
-          <section>
-            <div className="flex items-center gap-2 mb-3">
-              <AlertTriangle className="text-red-500" size={18} />
-              <h2 className="text-lg font-semibold">Requieren Atención</h2>
-            </div>
-
-            <div className="cards-list">
-              {orgsWithDebt
-                .sort((a, b) => b.overdueCount - a.overdueCount)
-                .slice(0, 5)
-                .map((org) => (
-                  <Link
-                    key={org.id}
-                    href={`/organizaciones/${org.id}`}
-                    className="card p-3 flex items-center justify-between bg-red-50 dark:bg-red-900/20 border-red-200 hover:border-red-400"
-                  >
-                    <div>
-                      <h3 className="font-medium text-sm">{org.name}</h3>
-                      <p className="text-xs text-red-600">
-                        {org.overdueCount} facturas vencidas
-                      </p>
-                    </div>
-                    <span className="font-bold text-red-600">
-                      {formatCOP(org.totalDebt)}
-                    </span>
-                  </Link>
-                ))}
-            </div>
-          </section>
-        )}
-      </main>
-
-      {/* Quick Actions */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-4">
-        <div className="container flex gap-3">
-          <Link
-            href="/organizaciones"
-            className="btn btn-outline flex-1"
-          >
-            <Building2 size={18} />
-            Organizaciones
-          </Link>
-          <button className="btn btn-primary flex-1">
-            <Bell size={18} />
-            Enviar Alertas
-          </button>
         </div>
-      </div>
+      </section>
 
-      {/* Spacer for bottom nav */}
-      <div className="h-24" aria-hidden="true" />
+      {/* Footer */}
+      <footer className="py-12 border-t border-white/5 bg-[#060B14]">
+        <div className="max-w-7xl mx-auto px-6 text-center text-white/40 text-sm font-medium">
+          <p>© 2026 AfiliadosOS. Tecnología de Proyector 2026.</p>
+        </div>
+      </footer>
+
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+        
+        .font-sans {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        h1, h2, h3, h4, .font-display {
+          font-family: 'Syne', sans-serif;
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+          animation: float 4s ease-in-out infinite;
+        }
+
+        .rotate-x-12 {
+          transform: perspective(1000px) rotateX(12deg);
+        }
+        .group:hover .group-hover\:rotate-x-0 {
+          transform: perspective(1000px) rotateX(0deg);
+        }
+      `}</style>
     </div>
   );
 }
