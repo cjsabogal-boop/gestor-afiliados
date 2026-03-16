@@ -1,8 +1,13 @@
 "use client";
 
 import { BarChart3, PieChart, TrendingUp, Download, Calendar, ArrowUpRight, ArrowDownRight, Users, Wallet, ShieldCheck } from 'lucide-react';
+import { useSector } from '../SectorProvider';
+import { getSectorData } from '../mockData';
 
 export default function ReportesPage() {
+  const { sector } = useSector();
+  const data = getSectorData(sector);
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -82,8 +87,8 @@ export default function ReportesPage() {
              </h3>
              <div className="space-y-5">
                {[
-                 { label: 'Membresías Mensuales', val: '65%', amt: '$94.3M', color: 'bg-[#0D9488]' },
-                 { label: 'Membresías Institucionales', val: '20%', amt: '$29.0M', color: 'bg-[#3B82F6]' },
+                 { label: `${data.roles.payments.charAt(0).toUpperCase() + data.roles.payments.slice(1)} Ordinarias`, val: '65%', amt: '$94.3M', color: 'bg-[#0D9488]' },
+                 { label: `${data.roles.payments.charAt(0).toUpperCase() + data.roles.payments.slice(1)} Institucionales`, val: '20%', amt: '$29.0M', color: 'bg-[#3B82F6]' },
                  { label: 'Eventos y Congresos', val: '10%', amt: '$14.5M', color: 'bg-indigo-500' },
                  { label: 'Otros Recaudos', val: '5%', amt: '$7.4M', color: 'bg-slate-300' },
                ].map((c, i) => (

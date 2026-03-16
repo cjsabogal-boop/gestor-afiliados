@@ -1,15 +1,20 @@
 "use client";
 
 import { Users, Bot, Shield, Wallet, Activity, Flame } from 'lucide-react';
+import { useSector } from './SectorProvider';
+import { getSectorData } from './mockData';
 
 export default function DashboardPage() {
+  const { sector } = useSector();
+  const data = getSectorData(sector);
+
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       {/* Header & Main Stats */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Consola Administrativa</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium">Supervisando cartera, cuotas sindicales y actividad de asociados.</p>
+          <p className="text-slate-500 text-sm mt-1 font-medium">Supervisando de forma centralizada a tu {data.orgName}.</p>
         </div>
         <div className="flex gap-3">
           <button className="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-sm font-bold transition-all shadow-sm">
@@ -24,8 +29,8 @@ export default function DashboardPage() {
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatCard title="Recaudo Mes" value="$85.4M" change="+12%" icon={<Wallet size={20} className="text-[#0D9488]" />} gradient="from-[#0D9488]/10 to-transparent" />
-        <StatCard title="Miembros Activos" value="1,245" change="+34" icon={<Users size={20} className="text-[#2563EB]" />} gradient="from-[#2563EB]/10 to-transparent" />
-        <StatCard title="Reservas / Eventos" value="18" change="Este mes" icon={<Bot size={20} className="text-[#3B82F6]" />} gradient="from-[#3B82F6]/10 to-transparent" />
+        <StatCard title={`${data.roles.users} Activos`} value="1,245" change="+34" icon={<Users size={20} className="text-[#2563EB]" />} gradient="from-[#2563EB]/10 to-transparent" />
+        <StatCard title={`Reservas (${data.roles.spaces})`} value="18" change="Este mes" icon={<Bot size={20} className="text-[#3B82F6]" />} gradient="from-[#3B82F6]/10 to-transparent" />
         <StatCard title="Morosidad Global" value="4.2%" change="-1.5%" icon={<Activity size={20} className="text-[#ef4444]" />} gradient="from-[#ef4444]/10 to-transparent" alert />
       </div>
 
@@ -33,29 +38,24 @@ export default function DashboardPage() {
         {/* Actividad Transaccional */}
         <div className="lg:col-span-2 bg-white border border-slate-200 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-sm">
           <div className="flex justify-between items-center mb-8">
-            <h3 className="font-bold text-slate-900 text-lg">Actividad Reciente en la Asociación</h3>
+            <h3 className="font-bold text-slate-900 text-lg">Actividad Reciente</h3>
             <button className="text-xs text-[#0D9488] font-bold hover:underline bg-[#0D9488]/5 px-3 py-1.5 rounded-lg border border-[#0D9488]/10">Ver Trazabilidad ➔</button>
           </div>
           
           <div className="space-y-4">
-            {[
-              { type: 'Reserva Confirmada (Auditorio)', user: 'ID: ACM-402 - Dr. Juan D.', time: 'Hace 5 min', amount: '$150,000', color: 'text-[#0D9488]' },
-              { type: 'Pago de Membresía (Anual)', user: 'ID: ACM-105 - Dra. Marta Gomez', time: 'Hace 15 min', amount: '$3,500,000', color: 'text-[#3B82F6]' },
-              { type: 'Check-in Asamblea General', user: 'ID: ACM-801 - Dr. Carlos Ruiz', time: 'Hace 1 hora', amount: 'Quórum +0.5%', color: 'text-[#2563EB]' },
-              { type: 'Alerta Morosidad Emitida (SMS)', user: 'ID: ACM-204 - Pendiente', time: 'Hace 2 horas', amount: 'Vencido', color: 'text-[#ef4444]' },
-            ].map((evt, i) => (
+            {data.mockTransactions.map((evt: any, i: number) => (
               <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50/50 border border-slate-100 hover:border-slate-200 transition-colors">
                 <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 shadow-sm ${evt.color}`}>
-                     <div className={`w-2 h-2 rounded-full ${evt.color.replace('text', 'bg')} shadow-sm`} />
+                  <div className={`w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 shadow-sm ${evt.col}`}>
+                     <div className={`w-2 h-2 rounded-full ${evt.col.replace('text', 'bg')} shadow-sm`} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-800">{evt.type}</p>
+                    <p className="text-sm font-bold text-slate-800">{evt.evt}</p>
                     <p className="text-xs text-slate-500 mt-0.5 font-medium">{evt.user}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className={`text-sm font-black ${evt.color}`}>{evt.amount}</p>
+                  <p className={`text-sm font-black ${evt.col}`}>{evt.val}</p>
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{evt.time}</p>
                 </div>
               </div>

@@ -2,26 +2,28 @@
 
 import { 
   Building2, Users, Link as LinkIcon, Bot, Shield, Wallet, Gamepad2, 
-  ArrowUpRight, LayoutGrid, Search, Bell, Settings, Globe
+  ArrowUpRight, LayoutGrid, Search, Bell, Settings, Globe, ChevronDown
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { SectorProvider, useSector, Sector } from './SectorProvider';
+import { getSectorData } from './mockData';
+import { useState } from 'react';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+function DashboardInnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { sector, setSector } = useSector();
+  const data = getSectorData(sector);
+  const [showSelector, setShowSelector] = useState(false);
 
   const navItems = [
     { section: "Gestión", items: [
       { id: "dashboard", icon: <LayoutGrid size={18} />, label: "Dashboard", href: "/dashboard" },
-      { id: "afiliados", icon: <Users size={18} />, label: "Asociados & Miembros", href: "/dashboard/afiliados" },
-      { id: "espacios", icon: <Building2 size={18} />, label: "Sedes / Reservas", href: "/dashboard/espacios" },
+      { id: "afiliados", icon: <Users size={18} />, label: `${data.roles.users}`, href: "/dashboard/afiliados" },
+      { id: "espacios", icon: <Building2 size={18} />, label: `${data.roles.spaces}`, href: "/dashboard/espacios" },
     ]},
     { section: "Finanzas & Cobros", items: [
-      { id: "cuotas", icon: <Wallet size={18} />, label: "Cobro de Membresías", href: "/dashboard/cuotas" },
+      { id: "cuotas", icon: <Wallet size={18} />, label: `${data.roles.payments}`, href: "/dashboard/cuotas" },
       { id: "pagos", icon: <ArrowUpRight size={18} />, label: "Pasarela (Wompi/PSE)", href: "/dashboard/pagos" },
       { id: "reportes", icon: <Shield size={18} />, label: "Reportes & Cartera", href: "/dashboard/reportes" },
     ]},
@@ -30,6 +32,13 @@ export default function DashboardLayout({
       { id: "anuncios", icon: <Bot size={18} />, label: "Centro de Mensajes", href: "/dashboard/anuncios" },
       { id: "votaciones", icon: <LinkIcon size={18} />, label: "Elecciones Ad-Hoc", href: "/dashboard/votaciones" },
     ]}
+  ];
+
+  const SECTORS: { id: Sector, label: string }[] = [
+    { id: 'medicos', label: 'Asociación Médica' },
+    { id: 'club', label: 'Club Social' },
+    { id: 'pilotos', label: 'Asociación de Pilotos' },
+    { id: 'fondo', label: 'Fondo de Empleados' }
   ];
 
   return (
@@ -90,11 +99,11 @@ export default function DashboardLayout({
         <div className="p-4 border-t border-slate-100 bg-slate-50/50">
           <Link href="/dashboard/configuracion" className="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer w-full text-left">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-xs font-bold text-white shadow-sm">
-              AM
+               {data.orgName.substring(0,2)}
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="text-xs font-bold text-slate-800 truncate">Asoc. Médicos</p>
-              <p className="text-[10px] text-slate-500 font-medium truncate">ID: ACM-9021</p>
+              <p className="text-xs font-bold text-slate-800 truncate">{data.orgName}</p>
+              <p className="text-[10px] text-slate-500 font-medium truncate">ID: {data.orgId}</p>
             </div>
             <Settings size={14} className="text-slate-400" />
           </Link>
@@ -118,7 +127,32 @@ export default function DashboardLayout({
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-slate-400 hover:text-slate-600 transition-colors bg-slate-100 rounded-full shadow-sm">
+             {/* Sector Selector */}
+             <div className="relative">
+                <button 
+                  onClick={() => setShowSelector(!showSelector)}
+                  className="flex items-center gap-2 pr-4 border-r border-slate-200 text-xs font-bold hover:text-[#0D9488] transition-colors"
+                >
+                  <span className="bg-[#0D9488]/10 text-[#0D9488] px-2 py-1 rounded shadow-sm border border-[#0D9488]/20 flex items-center gap-1">
+                     Simulando: {SECTORS.find(s => s.id === sector)?.label} <ChevronDown size={14} />
+                  </span>
+                </button>
+                {showSelector && (
+                  <div className="absolute top-full mt-2 right-4 w-48 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+                    {SECTORS.map(s => (
+                       <button 
+                          key={s.id}
+                          onClick={() => { setSector(s.id); setShowSelector(false); }}
+                          className={`w-full text-left px-4 py-3 text-xs font-bold transition-colors ${sector === s.id ? 'bg-[#0D9488] text-white' : 'hover:bg-slate-50 text-slate-600'}`}
+                       >
+                          {s.label}
+                       </button>
+                    ))}
+                  </div>
+                )}
+             </div>
+
+            <button className="relative p-2 text-slate-400 hover:text-slate-600 transition-colors bg-slate-100 rounded-full shadow-sm ml-2">
               <Bell size={18} />
               <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-red-500 border-2 border-white animate-pulse" />
             </button>
@@ -146,3 +180,16 @@ export default function DashboardLayout({
     </div>
   );
 }
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <SectorProvider>
+      <DashboardInnerLayout>{children}</DashboardInnerLayout>
+    </SectorProvider>
+  )
+}
+

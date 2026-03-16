@@ -2,20 +2,25 @@
 
 import { useState } from 'react';
 import { Bot, MessageSquare, Send, Mail, Smartphone, Users, Zap, Clock, ShieldCheck, Plus } from 'lucide-react';
-
-const MOCK_CAMPAIGNS = [
-  { id: 'CAM-001', title: 'Convocatoria Asamblea General 2026', channels: ['WhatsApp', 'Email'], reach: '95%', date: 'Hoy, 10:00 AM', status: 'Enviado', type: 'Estatutario' },
-  { id: 'CAM-002', title: 'Boletín Científico - Marzo', channels: ['Email'], reach: '42%', date: 'Ayer, 18:00 PM', status: 'En Curso', type: 'Informativo' },
-  { id: 'CAM-003', title: 'Alerta Morosidad (Trimestre 1)', channels: ['WhatsApp', 'Push'], reach: '0%', date: 'Mañana, 08:00 AM', status: 'Programado', type: 'Administrativo' },
-];
+import { useSector } from '../SectorProvider';
+import { getSectorData } from '../mockData';
 
 export default function AnunciosPage() {
+  const { sector } = useSector();
+  const data = getSectorData(sector);
+
+  const MOCK_CAMPAIGNS = [
+    { id: 'CAM-001', title: `Comunicado General - ${data.orgName}`, channels: ['WhatsApp', 'Email'], reach: '95%', date: 'Hoy, 10:00 AM', status: 'Enviado', type: 'Estatutario' },
+    { id: 'CAM-002', title: 'Boletín Informativo', channels: ['Email'], reach: '42%', date: 'Ayer, 18:00 PM', status: 'En Curso', type: 'Informativo' },
+    { id: 'CAM-003', title: 'Aviso Administrativo', channels: ['WhatsApp', 'Push'], reach: '0%', date: 'Mañana, 08:00 AM', status: 'Programado', type: 'Administrativo' },
+  ];
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Centro de Comunicaciones</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium">Notifica a tus asociados por WhatsApp (API Oficial), Email y Alertas Push.</p>
+          <p className="text-slate-500 text-sm mt-1 font-medium">Notifica a tus {data.roles.users.toLowerCase()} por WhatsApp (API Oficial), Email y Alertas Push.</p>
         </div>
         <button className="px-5 py-2.5 rounded-xl bg-[#0D9488] hover:bg-[#0f766c] text-white text-sm font-bold shadow-[0_4px_15px_rgba(13,148,136,0.3)] transition-all flex items-center gap-2">
           <Send size={16} /> Redactar Mensaje

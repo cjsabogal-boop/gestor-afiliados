@@ -2,24 +2,28 @@
 
 import { useState } from 'react';
 import { Calendar as CalendarIcon, Clock, CheckCircle, XCircle, MapPin, Users } from 'lucide-react';
-
-const MOCK_RESERVAS = [
-  { id: 'RES-001', espacio: 'Auditorio Principal', usuario: 'Dr. Carlos E. Salamanca', fecha: '15 Mar 2026', hora: '14:00 - 18:00', estado: 'Confirmada', asistentes: 120 },
-  { id: 'RES-002', espacio: 'Sala de Juntas B', usuario: 'Dra. Mariana Rodriguez', fecha: '16 Mar 2026', hora: '09:00 - 11:00', estado: 'Pendiente', asistentes: 12 },
-  { id: 'RES-003', espacio: 'Cancha de Tenis', usuario: 'Dr. Felipe Jaramillo', fecha: '16 Mar 2026', hora: '18:00 - 20:00', estado: 'Confirmada', asistentes: 4 },
-  { id: 'RES-004', espacio: 'Salón de Eventos', usuario: 'Fundación Cardio Vid', fecha: '20 Mar 2026', hora: '08:00 - 17:00', estado: 'Confirmada', asistentes: 350 },
-  { id: 'RES-005', espacio: 'Auditorio Principal', usuario: 'Dra. Andrea Gómez', fecha: '22 Mar 2026', hora: '10:00 - 12:00', estado: 'Rechazada', asistentes: 50 },
-];
+import { useSector } from '../SectorProvider';
+import { getSectorData } from '../mockData';
 
 export default function EspaciosPage() {
   const [filter, setFilter] = useState('Todas');
+  const { sector } = useSector();
+  const data = getSectorData(sector);
+
+  const MOCK_RESERVAS = [
+    { id: 'RES-001', espacio: data.mockSpaces[0]?.name || 'Espacio 1', usuario: data.mockUsers[0]?.name || 'Usuario 1', fecha: '15 Mar 2026', hora: '14:00 - 18:00', estado: 'Confirmada', asistentes: 120 },
+    { id: 'RES-002', espacio: data.mockSpaces[1]?.name || 'Espacio 2', usuario: data.mockUsers[1]?.name || 'Usuario 2', fecha: '16 Mar 2026', hora: '09:00 - 11:00', estado: 'Pendiente', asistentes: 12 },
+    { id: 'RES-003', espacio: data.mockSpaces[0]?.name || 'Espacio 1', usuario: data.mockUsers[2]?.name || 'Usuario 3', fecha: '16 Mar 2026', hora: '18:00 - 20:00', estado: 'Confirmada', asistentes: 4 },
+    { id: 'RES-004', espacio: 'Salón Secundario', usuario: data.mockUsers[3]?.name || 'Usuario 4', fecha: '20 Mar 2026', hora: '08:00 - 17:00', estado: 'Confirmada', asistentes: 350 },
+    { id: 'RES-005', espacio: data.mockSpaces[0]?.name || 'Espacio 1', usuario: data.mockUsers[0]?.name || 'Usuario 1', fecha: '22 Mar 2026', hora: '10:00 - 12:00', estado: 'Rechazada', asistentes: 50 },
+  ];
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Sedes y Reservas</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium">Gestión de calendarios, auditorios, salones y zonas sociales de la asociación.</p>
+          <p className="text-slate-500 text-sm mt-1 font-medium">Gestión de calendarios y {data.roles.spaces.toLowerCase()} de la asociación.</p>
         </div>
         <button className="px-5 py-2.5 rounded-xl bg-[#0D9488] hover:bg-[#0f766c] text-white text-sm font-bold shadow-[0_4px_15px_rgba(13,148,136,0.3)] transition-all flex items-center gap-2">
           <CalendarIcon size={16} /> Nuevo Espacio
@@ -31,17 +35,12 @@ export default function EspaciosPage() {
         <div className="lg:col-span-1 space-y-4">
           <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-4">Espacios Activos</h3>
           
-          {[
-            { nombre: 'Auditorio Principal', ubicacion: 'Sede Norte', capacidad: 200, status: 'Disponible' },
-            { nombre: 'Salón de Eventos', ubicacion: 'Sede Campestre', capacidad: 400, status: 'Ocupado' },
-            { nombre: 'Sala de Juntas B', ubicacion: 'Sede Norte', capacidad: 15, status: 'Disponible' },
-            { nombre: 'Canchas (Múltiples)', ubicacion: 'Sede Campestre', capacidad: 24, status: 'Mantenimiento' }
-          ].map((espacio, i) => (
+          {data.mockSpaces.map((espacio: any, i: number) => (
             <div key={i} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm hover:border-[#0D9488]/30 transition-colors cursor-pointer group">
-              <h4 className="font-bold text-slate-800 group-hover:text-[#0D9488] transition-colors">{espacio.nombre}</h4>
+              <h4 className="font-bold text-slate-800 group-hover:text-[#0D9488] transition-colors">{espacio.name}</h4>
               <div className="flex flex-col gap-1.5 mt-2 text-xs text-slate-500 font-medium">
-                <span className="flex items-center gap-1.5"><MapPin size={12}/> {espacio.ubicacion}</span>
-                <span className="flex items-center gap-1.5"><Users size={12}/> Capacidad: {espacio.capacidad} pax</span>
+                <span className="flex items-center gap-1.5"><MapPin size={12}/> {espacio.type}</span>
+                <span className="flex items-center gap-1.5"><Users size={12}/> Capacidad: {espacio.capacity} pax</span>
               </div>
               <div className="mt-3">
                 <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1.5 rounded-lg border ${

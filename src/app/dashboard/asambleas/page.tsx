@@ -2,9 +2,19 @@
 
 import { useState } from 'react';
 import { Users, Video, Activity, Gavel, Hand, BarChart3, CheckCircle2, PlayCircle, Settings, X, Search, StopCircle, ArrowRight, ShieldAlert, Cpu } from 'lucide-react';
+import { useSector } from '../SectorProvider';
+import { getSectorData } from '../mockData';
 
 export default function AsambleasPage() {
   const [quorum, setQuorum] = useState(65.4);
+  const { sector } = useSector();
+  const data = getSectorData(sector);
+
+  const activeSpeaker = data.mockUsers[0];
+  const queuedSpeakers = [
+    { name: data.mockUsers[1]?.name || 'Usuario 2', prop: `ID: ${data.mockUsers[1]?.id}`, wait: 'Esperando hace 2 min', img: '150?u=a042581f4e29026704d' },
+    { name: data.mockUsers[2]?.name || 'Usuario 3', prop: `ID: ${data.mockUsers[2]?.id}`, wait: 'Esperando hace 5 min', img: '150?u=a042581f4e29026703d' },
+  ];
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
@@ -15,7 +25,7 @@ export default function AsambleasPage() {
             <span className="text-red-500 text-xs font-black tracking-widest uppercase bg-red-50 px-2.5 py-1 rounded-md border border-red-100">En Vivo</span>
             <span className="text-slate-500 text-xs font-bold flex items-center gap-1.5"><Activity size={14} className="text-slate-400"/> Iniciada hace 45 mins</span>
           </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Asamblea General de Asociados 2026</h1>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Asamblea General {data.roles.userSingular}s 2026</h1>
           <p className="text-slate-500 text-sm mt-1 font-medium">Sala de control principal para moderación de intervenciones y votaciones en tiempo real.</p>
         </div>
         <div className="flex gap-3">
@@ -128,11 +138,11 @@ export default function AsambleasPage() {
                      </div>
                      <div>
                         <p className="text-base font-black text-slate-900 flex items-center gap-2">
-                           Dr. Carlos Salamanca 
+                           {activeSpeaker?.name || 'Usuario Activo'}
                            <span className="px-2 py-0.5 rounded text-[10px] bg-[#0D9488]/10 text-[#0D9488] border border-[#0D9488]/20 font-bold uppercase tracking-widest">Hablando</span>
                         </p>
                         <p className="text-xs text-slate-500 font-bold mt-0.5 flex items-center gap-1.5">
-                           Asociado Activo <span className="text-slate-300">•</span> ID: ACM-402 <span className="text-slate-300">•</span> 1.2% Votos
+                           {activeSpeaker?.type} <span className="text-slate-300">•</span> ID: {activeSpeaker?.id} <span className="text-slate-300">•</span> 1.2% Votos
                         </p>
                      </div>
                   </div>
@@ -145,10 +155,7 @@ export default function AsambleasPage() {
                 </div>
 
                 {/* Queue */}
-                {[
-                  { name: 'Dra. Maria Rodriguez', prop: 'ID: ACM-205', wait: 'Esperando hace 2 min', img: '150?u=a042581f4e29026704d' },
-                  { name: 'Dr. Felipe Jaramillo', prop: 'ID: ACM-801', wait: 'Esperando hace 5 min', img: '150?u=a042581f4e29026703d' },
-                ].map((q, i) => (
+                {queuedSpeakers.map((q, i) => (
                    <div key={i} className="p-4 pl-6 flex items-center justify-between hover:bg-slate-50 transition-colors group">
                       <div className="flex items-center gap-4">
                          <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 overflow-hidden shadow-sm opacity-70 group-hover:opacity-100 transition-opacity">

@@ -2,25 +2,22 @@
 
 import { useState } from 'react';
 import { Search, Filter, MoreVertical, Mail, Phone, ShieldCheck, AlertCircle, Building, User, Award } from 'lucide-react';
-
-const MOCK_AFILIADOS = [
-  { id: 'ACM-1021', name: 'Dr. Carlos E. Salamanca', property: 'Cirugía General', type: 'Asociado Activo', phone: '+57 300 123 4567', email: 'carlos.s@ejemplo.com', status: 'Al Día', lastPayment: '12 Feb 2026' },
-  { id: 'ACM-1285', name: 'Dra. Mariana Rodriguez', property: 'Pediatría', type: 'Asociado Junior', phone: '+57 311 987 6543', email: 'mariana.r@ejemplo.com', status: 'Moroso', lastPayment: '10 Ene 2026' },
-  { id: 'ACM-0453', name: 'Dr. Felipe Jaramillo', property: 'Medicina Interna', type: 'Asociado Emérito', phone: '+57 320 456 7890', email: 'felipe.jaramillo@ejemplo.com', status: 'Al Día', lastPayment: '15 Feb 2026' },
-  { id: 'ACM-2104', name: 'Fundación Cardio Vid', property: 'Institución', type: 'Socio Corporativo', phone: '+57 601 555 1234', email: 'admin@cardio.com', status: 'Al Día', lastPayment: '01 Feb 2026' },
-  { id: 'ACM-1705', name: 'Dra. Andrea Gómez', property: 'Ginecología', type: 'Asociado Activo', phone: '+57 315 789 0123', email: 'agomez@ejemplo.com', status: 'Acuerdo', lastPayment: '28 Ene 2026' },
-  { id: 'ACM-0982', name: 'Dr. Luis C. Sarmiento', property: 'Neurocirugía', type: 'Miembro de Junta', phone: '+57 310 222 3333', email: 'luis.ph@ejemplo.com', status: 'Al Día', lastPayment: '10 Feb 2026' },
-];
+import { useSector } from '../SectorProvider';
+import { getSectorData } from '../mockData';
 
 export default function AfiliadosPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const { sector } = useSector();
+  const data = getSectorData(sector);
+
+  const mockAfiliados = data.mockUsers;
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Directorio de Asociados</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium">Gestión del directorio, especialidades, altas y bajas institucionales.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Directorio de {data.roles.users}</h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">Gestión del directorio general, altas y bajas institucionales.</p>
         </div>
         <div className="flex gap-3">
           <button className="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-sm font-bold transition-all shadow-sm">
@@ -28,7 +25,7 @@ export default function AfiliadosPage() {
           </button>
           <button className="px-5 py-2.5 rounded-xl bg-[#0D9488] hover:bg-[#0f766c] text-white text-sm font-bold shadow-[0_4px_15px_rgba(13,148,136,0.3)] transition-all gap-2 flex items-center">
             <User size={16} />
-            Nuevo Socio
+            Nuevo {data.roles.userSingular}
           </button>
         </div>
       </div>
@@ -39,7 +36,7 @@ export default function AfiliadosPage() {
           <div className="absolute right-0 top-0 w-32 h-32 bg-[#0D9488]/10 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-all duration-500" />
           <div className="relative z-10 flex justify-between items-start">
             <div>
-              <p className="text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-[0.2em] whitespace-nowrap">Total Miembros</p>
+              <p className="text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-[0.2em] whitespace-nowrap">Total Registrados</p>
               <div className="flex items-end gap-2">
                 <p className="text-4xl font-black text-slate-900">1,245</p>
                 <div className="text-[10px] bg-green-50 text-green-600 px-2 py-1.5 border border-green-100 rounded-lg mb-1 font-black tracking-widest">+12%</div>
@@ -71,10 +68,10 @@ export default function AfiliadosPage() {
           <div className="absolute right-0 top-0 w-32 h-32 bg-[#ef4444]/10 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-all duration-500" />
           <div className="relative z-10 flex justify-between items-start">
             <div>
-               <p className="text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-[0.2em] whitespace-nowrap">Membresías Suspendidas</p>
+               <p className="text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-[0.2em] whitespace-nowrap">Con Novedades</p>
               <div className="flex items-end gap-2">
                 <p className="text-4xl font-black text-[#ef4444]">12</p>
-                <div className="text-xs text-slate-500 mb-1 font-bold">Resoluciones</div>
+                <div className="text-xs text-slate-500 mb-1 font-bold">En Revisión</div>
               </div>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl text-slate-500 border border-slate-100 group-hover:text-[#ef4444] group-hover:border-[#ef4444]/20 transition-colors">
@@ -91,7 +88,7 @@ export default function AfiliadosPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text" 
-              placeholder="Buscar por nombre, especialidad, ID..." 
+              placeholder="Buscar por nombre o ID..." 
               className="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm text-slate-800 focus:outline-none focus:border-[#0D9488] focus:ring-4 focus:ring-[#0D9488]/10 transition-all placeholder:text-slate-400 font-medium shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -106,28 +103,28 @@ export default function AfiliadosPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100 text-[10px] uppercase tracking-[0.1em] text-slate-400 font-bold">
-                <th className="p-5 pl-8 font-black">Asociado</th>
-                <th className="p-5 font-black">Especialidad / Categoría</th>
+                <th className="p-5 pl-8 font-black">Información Personal</th>
+                <th className="p-5 font-black">{data.roles.subLabel}</th>
                 <th className="p-5 font-black">Contacto Rápido</th>
-                <th className="p-5 font-black">Estado Colegiatura</th>
+                <th className="p-5 font-black">Estado Institucional</th>
                 <th className="p-5 font-black text-right pr-8">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {MOCK_AFILIADOS.map((afiliado) => (
+              {mockAfiliados.map((afiliado: any) => (
                 <tr key={afiliado.id} className="hover:bg-slate-50 transition-colors group cursor-pointer">
                   <td className="p-5 pl-8">
                     <div className="flex items-center gap-4">
                       <div className="relative">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black text-white shadow-sm border border-black/5 ${
-                          afiliado.status === 'Moroso' ? 'bg-gradient-to-br from-red-500 to-rose-600' : 'bg-gradient-to-br from-[#0D9488] to-teal-600'
+                          afiliado.status.includes('Moroso') ? 'bg-gradient-to-br from-red-500 to-rose-600' : 'bg-gradient-to-br from-[#0D9488] to-teal-600'
                         }`}>
-                          {afiliado.name.replace('Dr. ', '').replace('Dra. ', '').split(' ').map(n => n[0]).join('').substring(0, 2)}
+                          {afiliado.name.replace('Dr. ', '').replace('Dra. ', '').replace('Cap. ', '').replace('PO. ', '').split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
                         </div>
                         {afiliado.status === 'Al Día' && (
                           <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white shadow-sm" />
                         )}
-                         {afiliado.status === 'Moroso' && (
+                         {afiliado.status.includes('Moroso') && (
                           <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white shadow-sm animate-pulse" />
                         )}
                       </div>
@@ -141,7 +138,7 @@ export default function AfiliadosPage() {
                     <div className="flex flex-col">
                       <span className="text-sm text-slate-800 font-bold">{afiliado.property}</span>
                       <span className="text-[11px] text-slate-500 uppercase tracking-widest font-bold mt-0.5 flex items-center gap-1">
-                        {afiliado.type === 'Institución' ? <Building size={10} className="text-[#3B82F6]" /> : <Award size={10} className="text-[#0D9488]" />}
+                        {afiliado.type.includes('Corporativo') ? <Building size={10} className="text-[#3B82F6]" /> : <Award size={10} className="text-[#0D9488]" />}
                         {afiliado.type}
                       </span>
                     </div>
@@ -160,14 +157,14 @@ export default function AfiliadosPage() {
                     <div className="flex flex-col gap-1.5 items-start">
                       <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest
                         ${afiliado.status === 'Al Día' ? 'bg-green-50 text-green-700 border border-green-200 shadow-sm' : 
-                          afiliado.status === 'Moroso' ? 'bg-red-50 text-red-700 border border-red-200 shadow-sm' : 
+                          afiliado.status.includes('Moroso') ? 'bg-red-50 text-red-700 border border-red-200 shadow-sm' : 
                           'bg-amber-50 text-amber-700 border border-amber-200 shadow-sm'}`}>
                         {afiliado.status === 'Al Día' && <ShieldCheck size={12} />}
-                        {afiliado.status === 'Moroso' && <AlertCircle size={12} />}
+                        {afiliado.status.includes('Moroso') && <AlertCircle size={12} />}
                         {afiliado.status}
                       </div>
                       <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest pl-1 whitespace-nowrap">
-                        Último pago: {afiliado.lastPayment}
+                        Vlr Prox: {afiliado.amount}
                       </span>
                     </div>
                   </td>
@@ -184,7 +181,7 @@ export default function AfiliadosPage() {
         
         {/* Pagination */}
         <div className="p-5 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center bg-slate-50 gap-4">
-          <span className="text-xs text-slate-500 font-medium">Mostrando <strong className="text-slate-800">1</strong> a <strong className="text-slate-800">6</strong> de <strong className="text-slate-800">1,245</strong> registros</span>
+          <span className="text-xs text-slate-500 font-medium">Mostrando <strong className="text-slate-800">1</strong> a <strong className="text-slate-800">{mockAfiliados.length}</strong> de <strong className="text-slate-800">1,245</strong> registros</span>
           <div className="flex gap-2">
             <button className="px-4 py-2 rounded-xl bg-white text-slate-400 text-xs font-bold uppercase tracking-widest cursor-not-allowed border border-slate-200">
               Anterior

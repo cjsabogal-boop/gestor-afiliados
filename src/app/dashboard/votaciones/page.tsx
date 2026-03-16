@@ -1,14 +1,19 @@
 "use client";
 
 import { PieChart, ListChecks, CheckSquare, Clock, Plus, BarChart3, AlertCircle } from 'lucide-react';
+import { useSector } from '../SectorProvider';
+import { getSectorData } from '../mockData';
 
 export default function VotacionesPage() {
+  const { sector } = useSector();
+  const data = getSectorData(sector);
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Votaciones y Decisiones</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium">Lanzamiento de encuestas y votaciones con registro de opciones respaldadas por blockchain.</p>
+          <p className="text-slate-500 text-sm mt-1 font-medium">Lanzamiento de encuestas y votaciones con registro de opciones respaldadas por blockchain para tu {data.orgName}.</p>
         </div>
         <button className="px-5 py-2.5 rounded-xl bg-[#0D9488] hover:bg-[#0f766c] text-white text-sm font-bold shadow-[0_4px_15px_rgba(13,148,136,0.3)] transition-all flex items-center gap-2">
           <Plus size={16} /> Crear Votación
@@ -27,7 +32,7 @@ export default function VotacionesPage() {
                   <span className="text-slate-500 text-xs font-bold flex items-center gap-1"><Clock size={12}/> Restan 2 Días</span>
                 </div>
                 <h3 className="text-2xl font-black text-slate-900 mb-2">Aprobación Presupuesto General 2026</h3>
-                <p className="text-sm font-medium text-slate-600">Votación estatutaria para aprobar el presupuesto de egresos e inversiones de la Asociación para la vigencia 2026.</p>
+                <p className="text-sm font-medium text-slate-600">Votación estatutaria para aprobar el presupuesto de egresos e inversiones de tu organización para la vigencia 2026.</p>
              </div>
              
              <div className="bg-white rounded-2xl p-5 border border-[#0D9488]/20 shadow-sm">
@@ -38,7 +43,7 @@ export default function VotacionesPage() {
                    </div>
                    <div className="text-right">
                      <p className="text-sm font-black text-[#0D9488]">560 / 1245</p>
-                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Asociados han votado</p>
+                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{data.roles.users} han votado</p>
                    </div>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden shadow-inner font-mono text-[8px] flex items-center">
@@ -66,7 +71,7 @@ export default function VotacionesPage() {
                 </div>
                 <h4 className="font-bold text-slate-900">Encuestas Flash</h4>
              </div>
-             <p className="text-xs text-slate-500 font-medium mb-4">Sondeos rápidos sin valor estatutario para medir el pulso de los asociados sobre temas específicos.</p>
+             <p className="text-xs text-slate-500 font-medium mb-4">Sondeos rápidos sin valor estatutario para medir el pulso de los {data.roles.users.toLowerCase()} sobre temas específicos.</p>
              <button className="w-full py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all shadow-sm">
                Crear Sondeo Rápido
              </button>
@@ -79,7 +84,7 @@ export default function VotacionesPage() {
                 </div>
                 <h4 className="font-bold text-slate-900">Voto por Coeficiente</h4>
              </div>
-             <p className="text-xs text-slate-500 font-medium mb-4">Calcula votaciones ponderadas automáticamente usando los coeficientes importados del directorio asociativo.</p>
+             <p className="text-xs text-slate-500 font-medium mb-4">Calcula votaciones ponderadas automáticamente usando los coeficientes importados del directorio activo.</p>
              <div className="text-[10px] font-black uppercase text-amber-600 tracking-widest flex items-center gap-1">
                <AlertCircle size={12}/> Configuración Activa
              </div>
@@ -96,7 +101,7 @@ export default function VotacionesPage() {
             {[
               { id: 'VOT-042', title: 'Elección de Nueva Junta Directiva (2025-2027)', date: '10 Nov 2025', part: '82%', result: 'Plancha 2 Elegida', status: 'Cerrada' },
               { id: 'VOT-041', title: 'Aprobación Reforma Estatutaria', date: '15 Oct 2025', part: '91%', result: 'Aprobada (95% a favor)', status: 'Cerrada' },
-              { id: 'VOT-040', title: 'Aprobación Cuota Extraordinaria Congreso', date: '05 Sep 2025', part: '76%', result: 'Aprobada (88% a favor)', status: 'Cerrada' },
+              { id: 'VOT-040', title: `Aprobación Cuota Extraordinaria`, date: '05 Sep 2025', part: '76%', result: 'Aprobada (88% a favor)', status: 'Cerrada' },
             ].map((v, i) => (
                <div key={i} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50 border border-slate-100 hover:border-slate-300 rounded-2xl transition-all cursor-pointer group">
                   <div className="mb-4 md:mb-0">

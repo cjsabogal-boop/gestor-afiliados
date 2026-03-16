@@ -2,24 +2,33 @@
 
 import { useState } from 'react';
 import { Search, Filter, MoreVertical, FileText, Download, CheckCircle, Clock, AlertTriangle, ArrowRight, Wallet, Receipt, TrendingUp } from 'lucide-react';
-
-const MOCK_CUOTAS = [
-  { id: 'FAC-2026-005', property: 'ID: ACM-402', unitOwner: 'Dr. Carlos E. Salamanca', amount: '$350,000', period: 'Marzo 2026', date: '01 Mar 2026', status: 'Pendiente', type: 'Membresía Mensual', method: '-', badge: 'Nuevo' },
-  { id: 'FAC-2026-004', property: 'ID: ACM-801', unitOwner: 'Dr. Felipe Jaramillo', amount: '$420,000', period: 'Marzo 2026', date: '01 Mar 2026', status: 'Pendiente', type: 'Membresía + Congreso', method: '-' },
-  { id: 'FAC-2026-003', property: 'ID: ACM-205', unitOwner: 'Dra. Mariana Rodriguez', amount: '$350,000', period: 'Febrero 2026', date: '01 Feb 2026', status: 'Vencida', type: 'Membresía Mensual', method: '-', badge: 'Mora' },
-  { id: 'FAC-2026-002', property: 'ID: ACM-101', unitOwner: 'Dr. Juan Perez', amount: '$350,000', period: 'Febrero 2026', date: '02 Feb 2026', status: 'Pagada', type: 'Membresía Mensual', method: 'Wompi' },
-  { id: 'FAC-2026-001', property: 'ID: ACM-Corp', unitOwner: 'Fundación Cardio Vid', amount: '$850,000', period: 'Febrero 2026', date: '01 Feb 2026', status: 'Pagada', type: 'Membresía Corporativa', method: 'PSE' },
-];
+import { useSector } from '../SectorProvider';
+import { getSectorData } from '../mockData';
 
 export default function CuotasPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const { sector } = useSector();
+  const data = getSectorData(sector);
+
+  const MOCK_CUOTAS = data.mockUsers.map((user: any, index: number) => ({
+    id: `FAC-2026-00${index + 1}`,
+    property: `ID: ${user.id}`,
+    unitOwner: user.name,
+    amount: user.amount,
+    period: 'Marzo 2026',
+    date: `0${index + 1} Mar 2026`,
+    status: user.status.includes('Moroso') ? 'Vencida' : (index % 2 === 0 ? 'Pagada' : 'Pendiente'),
+    type: user.type,
+    method: index % 2 === 0 ? 'PSE' : '-',
+    badge: index === 0 ? 'Nuevo' : (user.status.includes('Moroso') ? 'Mora' : undefined)
+  }));
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Cobro de Membresías</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium">Generación de cuotas sindicales, conciliación bancaria y estados de cuenta.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Cobro de {data.roles.payments}</h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">Generación de cobros, conciliación bancaria y estados de cuenta.</p>
         </div>
         <div className="flex gap-3 flex-wrap">
           <button className="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-sm font-bold transition-all flex items-center gap-2 shadow-sm">
@@ -75,7 +84,7 @@ export default function CuotasPage() {
             </div>
             <p className="text-3xl font-black text-[#ef4444] tracking-tight mb-1">$4.2M</p>
             <p className="text-xs text-slate-500 font-bold flex items-center gap-1.5 mt-2">
-               <AlertTriangle size={14} className="text-[#ef4444]" /> 12 Miembros Vencidos
+               <AlertTriangle size={14} className="text-[#ef4444]" /> 12 {data.roles.users} Vencidos
             </p>
            </div>
            
@@ -101,7 +110,7 @@ export default function CuotasPage() {
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100 text-[10px] uppercase tracking-[0.1em] text-slate-400 font-bold">
                 <th className="p-5 pl-8 font-black">Factura</th>
-                <th className="p-5 font-black">Asociado / Especialidad</th>
+                <th className="p-5 font-black">{data.roles.userSingular} / Tipo</th>
                 <th className="p-5 font-black text-right">Monto</th>
                 <th className="p-5 font-black">Estado & Período</th>
                 <th className="p-5 font-black">Método de Pago</th>
