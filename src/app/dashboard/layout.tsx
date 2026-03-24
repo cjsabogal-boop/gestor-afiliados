@@ -2,7 +2,7 @@
 
 import { 
   Building2, Users, Link as LinkIcon, Bot, Shield, Wallet, Gamepad2, 
-  ArrowUpRight, LayoutGrid, Search, Bell, Settings, Globe, ChevronDown
+  ArrowUpRight, LayoutGrid, Search, Bell, Settings, ChevronDown
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -50,9 +50,7 @@ function DashboardInnerLayout({ children }: { children: React.ReactNode }) {
 
         <div className="h-20 flex items-center px-6 border-b border-slate-100">
           <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0D9488] to-[#01a877] flex items-center justify-center shadow-sm">
-              <Globe className="text-white" size={16} strokeWidth={3} />
-            </div>
+            <img src="/afiliadosos_logo.png" alt="AfiliadosOS Logo" className="h-8 w-auto" />
             <span className="text-lg font-bold tracking-tight text-slate-900 hover:opacity-80 transition-opacity">
               Afiliados<span className="text-[#0D9488]">OS</span>
             </span>

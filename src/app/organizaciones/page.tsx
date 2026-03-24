@@ -22,11 +22,13 @@ export default async function OrganizacionesPage() {
             {/* Header */}
             <header className="app-header">
                 <div className="container flex items-center justify-between py-0">
-                    <div className="flex items-center gap-2">
-                        <Building2 className="text-primary" size={24} />
+                    <div className="flex items-center gap-3">
+                        <img src="/afiliadosos_logo.png" alt="AfiliadosOS Logo" className="h-8 w-auto" />
                         <div>
-                            <h1 className="text-lg font-bold leading-none">GestorAfiliados</h1>
-                            <p className="text-xs text-gray-500">Panel de Administración</p>
+                            <h1 className="text-lg font-bold leading-none tracking-tight">
+                                Afiliados<span className="text-[#0D9488]">OS</span>
+                            </h1>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Panel de Administración</p>
                         </div>
                     </div>
                     <Link href="/" className="text-sm text-primary hover:underline">

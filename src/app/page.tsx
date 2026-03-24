@@ -43,9 +43,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 w-full z-50 backdrop-blur-2xl border-b border-white/50 bg-white/70 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#0D9488] to-[#01a877] rounded-xl flex items-center justify-center shadow-[0_4px_15px_rgba(13,148,136,0.2)]">
-              <LayersIcon />
-            </div>
+            <img src="/afiliadosos_logo.png" alt="AfiliadosOS Logo" className="h-10 w-auto" />
             <span className="text-xl font-bold tracking-tight text-slate-900">
               Afiliados<span className="text-[#0D9488]">OS</span>
             </span>
@@ -118,9 +116,7 @@ export default function LandingPage() {
                  {/* Sidebar */}
                  <div className="hidden md:flex w-64 bg-slate-900 flex-col pt-6 pb-4 border-r border-slate-800">
                     <div className="px-6 flex items-center gap-3 mb-10">
-                       <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0D9488] to-[#01a877] text-white flex items-center justify-center">
-                          <LayersIcon />
-                       </div>
+                       <img src="/afiliadosos_logo.png" alt="Logo" className="w-8 h-8 object-contain" />
                        <div>
                           <p className="text-white font-bold text-sm">AfiliadosOS</p>
                           <p className="text-slate-500 text-[10px] uppercase font-black tracking-widest">Club Demo</p>
@@ -585,9 +581,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-slate-500 text-sm font-medium">
           <div className="col-span-1 md:col-span-2 space-y-4">
             <div className="flex items-center gap-3">
-               <div className="w-8 h-8 bg-gradient-to-br from-[#0D9488] to-[#01a877] rounded flex items-center justify-center">
-                 <LayersIcon />
-               </div>
+               <img src="/afiliadosos_logo.png" alt="AfiliadosOS Logo" className="h-8 w-auto" />
                <span className="text-lg font-bold tracking-tight text-slate-900">
                  Afiliados<span className="text-[#0D9488]">OS</span>
                </span>
